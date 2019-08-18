@@ -8,6 +8,7 @@ Hardware Used : STM32F4 DISCOVERY kit, for more information visit https://www.st
 Software Tool : Kiel MDK V5, for more information visit http://www2.keil.com/mdk5/. 
                 For installation of Keil MDK V5 refer https://youtu.be/d_O2tu5CMbQ
 
+Note: As this microcontroller has many advanced features and the main aim of this project is to get all basic insights, during the driver development only the required functionalities are added and other advanced functionality is not added. I may update the driver and other functionality in the future.
 
 
 # Basic Concepts of STM32F407
