@@ -1,0 +1,337 @@
+**********************************************************STM32F407 DISCOVERY BOARD NOTES******************************************************************
+
+1)Base Address of Flash Memory -> 0x0800 0000
+
+2)Base Address of RAM Memory -> 0x2000 0000
+
+3)Base Address of AHB1 bus peripheral register 
+  AHB1_PERI_START_ADDRESS  : 0x4002 0000
+  AHB1_PERI_END_ADRESSS    : 0x4007 FFFF 
+
+4)Base Address of GPIOA Register -> 0x4002 0000 to 0x4002 03FF
+
+5)Base Address of RCC engine register -> 0x4002 3800 - 0x4002 3BFF
+
+6)Base Address of APB1 peripheral register ->0x4000 0000
+
+7)Base Address of SRAM2.
+  There are two SRAM
+  SRAM1 starts from-> 0x2000 0000
+  SIZE of SRAM1 =X
+  BASE_ADDRESS_OF_SRAM2 = BASE_ADDRESS_OF_SRAM1 + X
+
+8)Base address of ADC1 Register -> 0x4001 2000
+
+_________________________________________________________________________________________________________________________
+BUS INTERFACE NOTES 
+
+*If Instructions are present between address 0x00000000 to 0x1FFFFFFC, then cortex processor will fetch instructions
+ using the I-CODE BUS INTERFACE 
+*If the instructions are present outside the range 0x00000000 to 0x1FFFFFFC,then cortex processor will fetch instructions
+ using System Bus
+ 
+*If data is present between address 0x00000000 to 0x1FFFFFFF, then cortex processor will fetch data using the D-CODE BUS
+INTERFACE 
+*If the data is present outside the range 0x00000000 to 0x1FFFFFFF,then cortex processor will fetch data using System Bus
+_________________________________________________________________________________________________________________________
+
+QA on Bus interface.
+
+Ref: STM32F407VGT6 Micro-controller.
+
+1) Is it true?, System Bus is not connected to FLASH memory ? ---> YES True( Page 73 in data sheet)
+2) System bus can operate at 168Mhz? --->True
+3)SRAMs are connected to system bus ? ---->True
+4)APB1 can operate up to 168Mhz ?---> False
+5)Let's say i have peripheral data sheet , which says its operating frequency must be above 95Mhz. Can we connect this peripheral
+ to APB2 ? --->No(APB2 max = 84Mhz) 
+6)Processor can simultaneously fetch instructions and data from SRAM ? ---> No as there is Only one Bus.
+7)Processor can simultaneously fetch instructions and data from FLASH? ---->YES, separate bus Icode and Dcode
+8)What is the Max HCLK value of MUC? --> 168Mhz (Current operating frequency of AHB bus is called HCLK).
+9)What is the Max PCLK1 value of MCU? -->42Mhz (Operating frequency of APB1)
+10)What is the Max PCLK2 value of MCU?--->84Mhz (Operating frequency of APB2)
+11)GPIO and Processor communicate via AHB1 Bus ? --->True.
+12)USB OTG and processor communicate via ABH2 Bus ? ---> True
+13)US OTG and GPIOs can communicate with processor concurrently/simultaneously ? --> False. 
+14)Processor can talk to FLASH and SRAM simultaneously ? -->True.
+_______________________________________________________________________________________________________________________________
+
+BUS MATRIX
+
+*Bus matrix beautiful diagram @ page 18 of AN4031.
+________________________________________________________________________________________________________________________________
+
+CLOCK
+
+MCU has 3 main clock sources:
+
+1) Crystal Oscillator(HSE) - This is external clock source, can be connected to MCU.
+                             HSE - High speed External 
+2) RC Oscillator (HSI) -All modern MCU comes with internal RC Oscillator, which can be just activated to use.
+                          HSI - High Speed Internal.
+3) PLL(Phase locked loop - It is also Implemented internally in MCU, It uses low frequency sources to generate high frequency
+   clock. (PLLCLK).
+   
+ In Case of STM32F407VGT6,( Data sheet page 216,  Figure 21. Clock tree)
+ (**USE STM32 CUBE MX and select STM32F407 board, and goto Clock Configuration for Better Clock Tree**)
+ 
+  *HSI RC -> 16Mhz. 
+  *HSE -> Ref to Clock Tree, an external crystal has to be connected to HSE input and crystal has to be (4Mhz to 26Mhz).
+  *PLL -> It takes HSI /HSE as input.
+  
+ #RC Oscillator vs Crystal - Crystal is more Stable and accurate than internal RC.
+ 
+ ->All Three of these clock sources are given to SYSTEM CLOCK MULTIPLEXER, where we can select clock source.
+ ->Output of this MUX is SYSCLK(i.e, System Clock).
+ 
+ ->SYSCLK : Main clock of MUC, using this other clocks are derived(Ex: Peripheral, Bus clocks ect).
+ ->SYSCLK is given directly to Ethernet PTP Clock.
+ 
+ ->HCLK is derived from SYSCLK with a Prescaler in between , which brings down the clock frequency.
+ ->HCLK goes directly to AHB bus,core, memory and DMA.
+ ->HCLK goes to Cortex System Timer.
+ ->HCLK goes directly to Cortex Processor (FCLK Cortex Clock).
+ 
+ ->PCLK1 and PCLK2 are derived from HCLK.
+ ->PCLK1 goes to APB1 peripheral clock and APB1 Timer Clock
+ ->PCLK2 goes to APB2 peripheral clock and APB2 Timer Clock
+ 
+*By default MCU uses HSI (i.e internal RC Oscillator) as SYSCLK. Which means after reset HSI is used as SYSCLK Source.
+_________________________________________________________________________________________________________________________ 
+ 
+RCC(Reset Clock Control)
+
+->Before using any peripheral its clock should be enabled.
+->Referring MUC Block Diagram, all different peripheral drives the clock from bus which it is connected.
+->By default almost all the peripheral are deactive, which means there clocks are not enabled.
+->RCC engine of MCU gives various registers to enable and disable various peripheral clocks.
+
+#To Understand enabling clock before using peripheral refer Kiel project "peripheral_clock"
+
+*Troubleshoot Tip 1 : Check whether the clock required is enabled or not.
+_________________________________________________________________________________________________________________________
+
+VECTOR TABLE OF MCU.
+
+* What is Vector Table?
+-> It is a table of vectors. Generally vectors are related to directions , as we know VECTORS in physics has both magnitude
+   and direction. In MCU we can compare pointers are like direction, as it points to certain addresses. So we can say vector
+   table is table holding specific address.
+   Next question is obviously address of what?. It actually contains the addresses of exceptions handlers.
+   
+-> Exception handler --> System Exceptions(MUC internally generates) + Interrupts(External)
+   15 System Exceptions + 240 External Interrupts.
+   
+
+Referring : Table 61. Vector table for STM32F405xx/07xx and STM32F415xx/17xx (Page 372 of RM0090).
+
+1) There are 6 columns in Vector Table -> Position,Priority, Type of priority, Acronym, Description and Address.
+2) We can see that position is kept empty for all the system exceptions, system exceptions comes from processor(ARM)end.
+   So vendor ST does not have control  over these. These positions are with respect to NVIC.
+   Ex : Watch dog exceptions is Position 0 w.r.t to NVIC.
+   Another name for position is IRQ Number.
+3) Priority column gives the priority of exceptions and interrupts reset has highest priority of -3.   
+4) Type of Priority : Reset, NMI and HardFault have fixed priority, which means no one can change it. Apart from these 3 the
+   remaining has settable priority.
+   
+5) Address column tells that where exactly in the processor memory map you have to keep the corresponding exception handler.
+   Handler is just a C function which takes care of that exception.
+   Example : if we have implemented a function to handle NMI exception in your program then address of that handler must be kept
+   at 0x0000 0008. That is function pointer should be kept in this addresses.
+6) The very first address that is "0x00000000" is reserved and it has special data -> STACK Pointer value in Cortex Processor.
+   Before coming to reset handler, processor loads the value stored in 0x00000000 location into stack pointer, because always stack
+   pointer must be initialized before entering into any handler. So its necessary for us to keep a valid value at this address. 
+   All this things are handled in startup code.   
+_______________________________________________________________________________________________________________________________________
+
+MCU INTERRUPT DESIGN
+
+
+ ->We can observer here that not all interrupts goes directly to NVIC. Some peripheral deliver their interrupt to NVIC over the EXTI Lines.
+ Some peripheral deliver their interrupt directly to NVIC. This is the design of ST.
+ 
+ ->Some quick understanding before we proceed to design are as fallows :
+    1) How does GPIO pin interrupts the processor?
+    2) what is the design?
+    3) How vendor actually delivers the GPIO interrupt to processor.
+	
+	
+Ref: Figure 41. External interrupt/event controller block diagram (Page 380 of RM0090)
+  1) ST MCU has a Engine Called EXTI (External Interrupt Controller).
+  2) This engine is actually hanging on APB Bus(APB2), so it drives the clock from PCLK2 .
+  3) This engine is finally connected to NVIC Interrupt Controller. This engine gives 23 lines to NVIC.
+  4) In vector table we can see 23 entries related to EXTI.
+
+
+Ref: Figure 42. External interrupt/event GPIO mapping (STM32F405xx/07xx and STM32F415xx/17xx) (Page 382 of RM0090)
+    1) Figure 42 shows how exactly the GPIOs are delivering their interrupts to NVIC.
+	2)All the 0th Pins (PA0,PB0,PC0,PD0,PE0,PF0,PG0,PH0 and PI0) of GPIO ports are connected to EXTI1 line through MUX.
+	  EXTI0[3:0] bits in the SYSCFG_EXTICR1 register is used for this purpose.
+	3)In the similar way from figure 42 we can see remaining pins how they deliver their interrupts.
+	
+-> Ref : Figure 41, We need to Know about Pending Request Register.
+   Pending Request register: This Register tells us interrupt on which which EXTI line is pending.
+                             When interrupt occurs corresponding bit in This register goes high.
+							 Once interrupt event is finished, its programmer responsibility to clear this bit.
+							 If the bit is not cleared, it leads to bug ->Refer written notes.
+							 
+________________________________________________________________________________________________________________________________________________
+
+GPIO Register
+
+
+* GPIO port mode register (GPIOx_MODER) (x = A..I/J/K)
+
+  -> Before using any GPIO port, we should decide its mode, whether you want to use it as input, output, alternate functionality or analog mode.
+     MODERy[1:0]: Port x configuration bits (y = 0..15)
+           These bits are written by software to configure the I/O direction mode.
+            00: Input (reset state) -> By default.
+            01: General purpose output mode
+            10: Alternate function mode -> Such as UART, SPI, I2C ect.
+            11: Analog mode
+  ->Before Using any GPIO for any purpose, configuring this register is must.
+  
+* GPIO port output type register (GPIOx_OTYPER) (x = A..I/J/K)
+   -> When GPIO pin is in output mode, this register is used to choose output type.
+          Bits 15:0 OTy: Port x configuration bits (y = 0..15)
+          These bits are written by software to configure the output type of the I/O port.
+          0: Output push-pull (reset state)
+          1: Output open-drain
+	 
+* GPIO port output speed register (GPIOx_OSPEEDR) (x = A..I/J/K)
+  QA : Why do we have speed setting for I/O pin?
+       Ans-> To save power.
+	   
+	   OSPEEDRy[1:0]: Port x configuration bits (y = 0..15)
+       These bits are written by software to configure the I/O output speed.
+       00: Low speed
+       01: Medium speed
+       10: High speed
+       11: Very high speed
+	   
+	   ->LOW speed GPIO consumes less power as compared to HIGH Speed GPIO.
+	   ->But low speed GPIO have larger (Trise ->rising edge) and (Tfall->falling edge)(SLEW RATE). Which may not be suitable for some application.
+	   ->GPIO Fast toggle capable of every two clock cycle -> which means if GPIO is high and it needs to go low it needs minimum two processor clock cycle.
+	     Assuming MCU is running at 48Mhz, then fastest toggle speed of GPIO is 24Mhz.
+		 
+* GPIO port pull-up/pull-down register (GPIOx_PUPDR)(x = A..I/J/K)
+       -> Internal pull-up/pull-down registers can be configured on the GPIO pin which are in input/output mode.
+	   
+* GPIO port input data register (GPIOx_IDR) (x = A..I/J/K)
+        ->It is 32 bit read-only register, where upper 16bits are not used.
+		-> Value of this register bit gives corresponding GPIO pin voltage status(HIGH/LOW).
+		->Reading this register gives voltage on each pins of GPIO Port.
+		
+* GPIO port output data register (GPIOx_ODR) (x = A..I/J/K)
+        ->It is 32 bit write-only register, where upper 16bits are not used.
+		-> In this register each bit is used to write a ouput value to corresponding pin of port.
+
+* Very Important GPIO Configuration Register -> GPIO Alternate Function Register -> There are Two registers.
+      1)GPIO alternate function low register (GPIOx_AFRL) (x = A..I/J/K) -> Used for Pin 0 to 7.
+	  2)GPIO alternate function high register (GPIOx_AFRH) (x = A..I/J)  -> Used for Pin 8 to 15.
+	  ->Each GPIO Pin can have 16 Different alternate functions (4 bits are used for selection).
+	  Ref : Figure 26. Selecting an alternate function on STM32F405xx/07xx and STM32F415xx/17xx ->Gives alternate Function.
+  
+  		
+
+ENABLING/DISABLING OF GPIO PERIPHERAL CLOCK
+
+    ->In STM32F4xx MCU, all peripheral clocks are managed by RCC Block.
+		->By default all peripheral clock are disabled for saving power.
+		->So before using any GPIO, its clock should be enabled.
+		->All GPIO Ports are connected to AHB1 BUS.
+		-> RCC AHB1 peripheral clock enable register (RCC_AHB1ENR) is used.
+		
+_______________________________________________________________________________________________________________________________________
+
+GPIO Driver Development
+
+-> For driver development no any STM provided drivers are used.
+-> We will use CMSIS Core API header given BY ARM.
+-> It is always better to write HEADEDR file first before writing source / .c files.
+-> Header file has 3 Main section------> 1)GPIO Register bit definition macros.
+                                         2)Data structure for GPIO Pin Initialization.
+                                         3)Driver Exposed API.
+										 
+
+ ****External Interrupt Register***	 (Page 384 of RM0090)
+
+->Interrupt mask register (EXTI_IMR) - Used to mask/un-mask of interrupts over 23 lines which are handled by external interrupt controller
+                                     - Bit 0 to 15 are used to mask/un-mask interrupts on 16EXTI lines(EXTI0 to EXTI15)
+                                     - 1 = Mask, 0 = unmask.
+
+->Rising trigger selection register (EXTI_RTSR)	 								 
+									 -By using this register we can configure the interrupt as rising edge triggered.
+									 -Bits 22:0 TRx: Rising trigger event configuration bit of line x
+                                                  0: Rising trigger disabled (for Event and Interrupt) for input line
+                                                  1: Rising trigger enabled (for Event and Interrupt) for input line
+->Falling trigger selection register (EXTI_FTSR)
+									 - By using this register we can configure the interrupt as falling edge triggered.	
+
+->Pending register (EXTI_PR)        -Whenever the interrupt occurs on any of 23 External interrupt lines, corresponding bit will be set 
+                                     by hardware in pending register.
+                                    -This is to indicate that interrupt has occured on that line.
+                                    -It is programmer responsibility to clear this bit.( This bit is cleared by programming it to ‘1’.)									
+___________________________________________________________________________________________________________________________________________________________
+
+**************************SPI (Serial peripheral interface )**************************************************************
+
+
+Ref  : The block diagram of the SPI is shown in Figure 246. (Page 876 0f RM0090)
+
+ -> From block diagram we can see that 4 pins are coming out - MOSI, MISO, SCLK and NSS(Slave select).
+ -> the heart of the block diagram is the shift register with two buffer one is the TX buffer another is the RX Buffer.
+ -> TX and RX buffer are accessible over APB1/APB2 Bus.
+ -> To transmit  the data , the data has to be written to the TX buffer, whose content then get loaded to shift register then transmitted.
+ -> When the shift register receives the complete byte it transfer it to RX buffer where we can read it.
+ -> The we have couple of control register SPI_CR1, SPI_CR2 which are used to control SPI operations.
+ -> One status register SPI_SR. It holds the status of various SPI events such TX event, RX event and error event etc.
+ -> Clock is produced by baud rate generator block which is controlled by BR0,BR1,BR2 bits in control register.
+ 
+ 
+ SPI Peripheral Clock & Serial Clock
+      
+	 -> There are 3 SPI peripherals. Out of which SPI1 is connected to APB2 bus and SPI2,SPI3 are connected to APB1 bus.
+	 -> SPI clock speeds are dependent on APB1/APB2. We already know APB1 bus has max 42MHz and APB2 has max 84Mhz. These are represented by peripheral
+        f(pclk).
+     -> So for SPI2/SPI3 the max clock speed is 42Mhz as it is hanging on APB1 bus.
+     -> f(pclk) is given to SP2/SPI3. 
+     -> after this there is prescalar whose min value is 2 which results in SCLK.
+     -> So if we take HSI(16Mhz) as clock source, APB1/APB2 will have 16Mhz speed and f(pclk) = 16Mhz and SCLK = 8Mhz.(Ref diagram in notes).
+     -> similar way for SP1 max clock speed is 84Mhz as it is hanging on APB2.
+	 
+ SPI Registers
+ 
+     - SPI Control Registers
+	   ->There are two control registers, SPI_CR1 and SPI_CR2.
+	   
+	   SPI_CR1 Register.
+	      ->SPE bit is used to enable the SPI peripheral.(Until this bit is 1 SPI peripheral will never work).
+		  ->SSM ,SSI bit are used to select slave using software.
+		  
+	   SPI_CR2 Register.
+	       ->TXEIE pin manages TXE event(Transmit buffer empty event) that is whenever the TX buffer is emty the TXE flag is set in the status register.
+		     then firmware will get interrupt when TXEIE pin is set.
+		   ->RXNEIE pin enables interrupt for RX buffer not empty event. Whenever RX buffer is not empty that is when it has some data RXNE bit is set in status
+             register. So if we enable this pin firmware will get interrupt when RXNE pin is set.
+			 
+	   SPI Data Register(SPI_DR)
+	       ->SPI data register is 16-bit wide. IF we transfer 1byte upper bits (8 to 15) are unused.
+		   ->SPI allows you to transfer 16bit at a time thats the reason data register is 16bit wide. But by default its 1byte.
+		   ->The data register is split into 2 buffers - one for writing (Transmit Buffer) and another one for reading (Receive buffer). A write to the data 
+		      register will write into the Tx buffer and a read from the data register will return the value held in the Rx buffer.(ref diagram in notes)
+		
+		SPI Status Register(SPI_SR)
+		   ->First two bits holds TXE and RXNE events. When TX buffer is empty TXE bit is set to 1. When RX buffer is not emty RXNE bit is set.
+		   ->TXE and RXNE bits are very usefull during data transfer, firmware should either poll these bits or get interrupt upon setting these bits during data transmission.
+		   ->FRE,OVR, MODF, CRC ERR, UDR are used to indicate error events. These flags are set when corresponding error occurs.
+		   ->BSY (busy flag), is set whenever SPI is doing TX/RX.
+		   
+
+***********************************************************SPI Driver Development ********************************************************************************
+
+     Header file has 3 main section - 1) SPI bit definition
+	                                  2) Data structure used by SPI Driver.
+									  3) Driver exposed API.
+	 
+ 
