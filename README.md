@@ -10,5 +10,16 @@ Software Tool : Kiel MDK V5, for more information visit http://www2.keil.com/mdk
 
 Note: As this microcontroller has many advanced features and the main aim of this project is to get all basic insights, during the driver development only the required functionalities are added and other advanced functionality is not added. I may update the driver and other functionality in the future.
 
+Please find the STM32F4 Discovery User Manual and STM32F4xxx Reference Manual (RM0090) inside a folder called Documents. I will be referring some information such as block diagrams, register details ect from these documents.
 
-# Basic Concepts of STM32F407
+
+# Overview of STM32F407VGT6 Microcontroller
+#### Please refer : Figure 6. STM32F407VGT6 block diagram from STM32F4 Discovery User Manual (Page 12).
+
+The STM32F407 Discovery board uses STM32F407VGT6 Microcontroller which has **ARM Cortex-M4F** Processor, which is capable of running upto **168Mhz**. This MCU has many peripherals such as GPIO ports, TIMERS, ADCs, DACs, Flash Memory, SRAM, SPI, UART ect. The processor and peripherals talk via **BUS-Interface**.  There are three busses available :-
+1. **I-BUS** (Instruction Bus)   
+2. **D-BUS** (Data Bus)
+3. **S-BUS** (System Bus)
+
+
+ 
