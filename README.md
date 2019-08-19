@@ -3,12 +3,12 @@ The main purpose of this project is to get an insight into the STM32F407 Discove
 
 This project gives almost all the basic information needed to get started with STM32F407 Discovery Board and also development of driver code.
 
-Hardware Used : STM32F4 DISCOVERY kit, for more information visit https://www.st.com/en/evaluation-tools/stm32f4discovery.html
+**Hardware Used** : STM32F4 DISCOVERY kit, for more information visit https://www.st.com/en/evaluation-tools/stm32f4discovery.html
 
-Software Tool : Kiel MDK V5, for more information visit http://www2.keil.com/mdk5/. 
+**Software Tool** : Kiel MDK V5, for more information visit http://www2.keil.com/mdk5/. 
                 For installation of Keil MDK V5 refer https://youtu.be/d_O2tu5CMbQ
 
-Note: As this microcontroller has many advanced features and the main aim of this project is to get all basic insights, during the driver development only the required functionalities are added and other advanced functionality is not added. I may update the driver and other functionality in the future.
+**Note**: As this microcontroller has many advanced features and the main aim of this project is to get all basic insights, during the driver development only the required functionalities are added and other advanced functionality is not added. I may update the driver and other functionality in the future.
 
 Please find the STM32F4 Discovery User Manual,STM32F4xxx Reference Manual (RM0090) and other related documents inside a folder called Documents. I will be referring to these documents for information such as block diagrams, register details ect.
 
