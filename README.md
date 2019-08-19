@@ -10,7 +10,7 @@ Software Tool : Kiel MDK V5, for more information visit http://www2.keil.com/mdk
 
 Note: As this microcontroller has many advanced features and the main aim of this project is to get all basic insights, during the driver development only the required functionalities are added and other advanced functionality is not added. I may update the driver and other functionality in the future.
 
-Please find the STM32F4 Discovery User Manual and STM32F4xxx Reference Manual (RM0090) inside a folder called Documents. I will be referring some information such as block diagrams, register details ect from these documents.
+Please find the STM32F4 Discovery User Manual,STM32F4xxx Reference Manual (RM0090) and other related documents inside a folder called Documents. I will be referring to these documents for information such as block diagrams, register details ect.
 
 
 # Overview of STM32F407VGT6 Microcontroller
