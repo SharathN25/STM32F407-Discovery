@@ -8,7 +8,7 @@ This project gives almost all the basic information needed to get started with S
 **Software Tool** : Kiel MDK V5, for more information visit http://www2.keil.com/mdk5/. 
                 For installation of Keil MDK V5 refer https://youtu.be/d_O2tu5CMbQ
 
-**Note**: As this microcontroller has many advanced features and the main aim of this project is to get all basic insights, during the driver development only the required functionalities are added and other advanced functionality is not added. I may update the driver and other functionality in the future.
+**Note** : As this microcontroller has many advanced features and the main aim of this project is to get all basic insights, during the driver development only the required functionalities are added and other advanced functionality is not added. I may update the driver and other functionality in the future.
 
 Please find the STM32F4 Discovery User Manual,STM32F4xxx Reference Manual (RM0090) and other related documents inside a folder called Documents. I will be referring to these documents for information such as block diagrams, register details ect.
 
