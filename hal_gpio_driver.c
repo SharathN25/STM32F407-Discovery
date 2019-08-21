@@ -1,3 +1,11 @@
+/**
+  *************************************************************************************************************************
+  * @file    hal_gpio_driver.c
+  * @author  Sharath N
+  * @brief   GPIO HAL module driver,
+             This file provides firmware functions to manage the functionality of GPIO in STM32F407 Discovery Board.
+***************************************************************************************************************************/
+
 #include <stdint.h>
 #include "hal_gpio_driver.h"
 
