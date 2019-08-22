@@ -10,7 +10,7 @@
 #ifndef _HAL_GPIO_DRIVER_H
 #define _HAL_GPIO_DRIVER_H
 
-/*MCU specific header file for stm32f407vgt6 base discovery board */
+/*MCU specific header file for stm32f407vgt6 based discovery board */
 #include "stm32f407xx.h"
 
 /*************************************************************************************************************************/
