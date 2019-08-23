@@ -1,6 +1,9 @@
 # Understanding STM32F407 Discovery Board
 The main purpose of this project is to get an insight into the STM32F407 Discovery Board, which is an ARM Cortex M4 based Microcontroller. As I started working on STM32F07 Discovery Board, initially it was difficult and confusing to understand and program this microcontroller because understanding internal structures and working of the microcontroller using datasheet of STM32F407VGT chipset is difficult especially if one is a beginner.
 
+                                      Figure 1 : STM32F407 Discovery Board
+<img src = "Images/Figure_1_STM32F4DISCOVERY.png"  width="605" height="314" hspace="120">
+
 This project gives almost all the basic information needed to get started with STM32F407 Discovery Board and also development of driver code.
 
 **Hardware Used** : STM32F4 DISCOVERY kit, for more information visit https://www.st.com/en/evaluation-tools/stm32f4discovery.html
@@ -16,7 +19,7 @@ Please find the STM32F4 Discovery User Manual,STM32F4xxx Reference Manual (RM009
 ## Overview of STM32F407VGT6 Microcontroller
 **Please refer : Figure 6. STM32F407VGT6 block diagram from 'STM32F4 Discovery User Manual' (Page 12).**
 
-<img src = "Images/Figure_6_STM32F407VGT6_block_diagram.png" width="700" height="900" >
+<img src = "Images/Figure_6_STM32F407VGT6_block_diagram.png" width="750" height="950" hspace="30">
 
 The STM32F407 Discovery board uses STM32F407VGT6 Microcontroller which has **ARM Cortex-M4F** Processor, which is capable of running upto **168Mhz**. This MCU has many peripherals such as GPIO ports, TIMERS, ADCs, DACs, Flash Memory, SRAM, SPI, UART ect. The processor and peripherals talk via **BUS-Interface**.  There are three busses available :-
 1. **I-BUS** (Instruction Bus)   
