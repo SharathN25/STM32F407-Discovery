@@ -16,6 +16,8 @@ Please find the STM32F4 Discovery User Manual,STM32F4xxx Reference Manual (RM009
 ## Overview of STM32F407VGT6 Microcontroller
 **Please refer : Figure 6. STM32F407VGT6 block diagram from 'STM32F4 Discovery User Manual' (Page 12).**
 
+<img src = "Images/Figure_6_STM32F407VGT6_block_diagram.png" width="700" height="900" >
+
 The STM32F407 Discovery board uses STM32F407VGT6 Microcontroller which has **ARM Cortex-M4F** Processor, which is capable of running upto **168Mhz**. This MCU has many peripherals such as GPIO ports, TIMERS, ADCs, DACs, Flash Memory, SRAM, SPI, UART ect. The processor and peripherals talk via **BUS-Interface**.  There are three busses available :-
 1. **I-BUS** (Instruction Bus)   
 2. **D-BUS** (Data Bus)
@@ -34,6 +36,9 @@ So instructions and data use I-bus and D-bus respectively, All the other periphe
 
 ## Bus Matrix
 **Please refer : Figure 7. System architecture from 'Using the STM32F2 and STM32F4 DMA controller(AN4031)' (page 18).**
+
+<img src = "Images/Figure_7_System%20architecture.png" width="700" height="500" hspace="100" >
+
 Refering to the figure 7, The Yellow blocks are Master and blocks in Green are Slaves, there are lots of connected dots which actually says that there is path from master to slave for communication. In Microcontroller , the communication between the processors and the peripherals is seen in the scope of communication between master and slave. Here the processor ARM Cortex-M4 itself is a master, and it may have other masters such as Ethernet, High Speed USB 2.0, DMA1 and DMA2.
 
 ## Clock
