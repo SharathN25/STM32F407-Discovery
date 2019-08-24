@@ -55,9 +55,9 @@ STM32F407VGT6 Micorcontroller has 3 main clock sources:
  
 **Please refer : Figure 21. Clock tree from 'STM32F4xxx Reference Manual (RM0090)' (Page 216).**
 
-<img src="Images/Figure_Clock_Tree.png" >
-
 **Note** : If your using **STM32 CUBE MX** tool, then select STM32F407 board and goto **clock configuration** for a much better clock tree representation.(I prefer to use this clock representation for easier understanding).
+
+<img src="Images/Figure_Clock_Tree.png">
 
 From (Figure21. Clock tree) we can see that **HSI RC** is 16Mhz internal Clock, and an external oscillator (4Mhz to 26Mhz) has to be connected to **HSE** input and **PLL** takes HSI/HSE as input to produce various other clocks. All 3 of these clock sources are given to SYSTEM CLOCK MULTIPLEXER where we can select clock source, Output of this MUX is **SYSCLK**(i.e, System Clock).
 
