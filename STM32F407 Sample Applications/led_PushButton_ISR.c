@@ -3,8 +3,8 @@
  * @author   Sharath N 
  * @brief    This is a sample application to demonstrate ISR, this program bliks the the blue LED of stm32f407 discovery 
              board, when user push button is pressed an Interrupt is generated which calls the ISR program. ISR turns ON
-						 GREEN, RED and ORANGE LED one by one then turns of GEEN ,RED and ORANGE LED simultaneously. Once ISR is comple
-						 -ted . Program execute main function i.e, it start blinking blue LED again.
+	     GREEN, RED and ORANGE LED one by one then turns of GEEN ,RED and ORANGE LED simultaneously. Once ISR is comple
+	     -ted . Program execute main function i.e, it start blinking blue LED again.
  **************************************************************************************************************************/
 
 
