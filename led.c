@@ -1,3 +1,11 @@
+/**************************************************************************************************************************
+ * @file     led.h
+ * @author   Sharath N 
+ * @brief    USER LED HAL module driver. This file provides firmware function to manage the User led's such as initialize,
+             turn on/off led and toggle the led.
+ **************************************************************************************************************************/
+
+
 #include "led.h"
 
 /** 

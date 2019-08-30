@@ -410,11 +410,19 @@
         </Group>
         <Group>
           <GroupName>User App</GroupName>
+        </Group>
+        <Group>
+          <GroupName>SPI Driver</GroupName>
           <Files>
             <File>
-              <FileName>main.c</FileName>
+              <FileName>hal_spi_driver.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\hal_spi_driver.h</FilePath>
+            </File>
+            <File>
+              <FileName>hal_spi_driver.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\main.c</FilePath>
+              <FilePath>.\hal_spi_driver.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -437,8 +445,8 @@
           <targetInfo name="Target 1"/>
         </targetInfos>
       </component>
-      <component Cclass="Device" Cgroup="Startup" Cvendor="Keil" Cversion="2.6.2" condition="STM32F4 CMSIS">
-        <package name="STM32F4xx_DFP" schemaVersion="1.3" url="http://www.keil.com/pack" vendor="Keil" version="2.13.0"/>
+      <component Cclass="Device" Cgroup="Startup" Cvendor="Keil" Cversion="2.6.3" condition="STM32F4 CMSIS">
+        <package name="STM32F4xx_DFP" schemaVersion="1.4" url="http://www.keil.com/pack/" vendor="Keil" version="2.14.0"/>
         <targetInfos>
           <targetInfo name="Target 1"/>
         </targetInfos>

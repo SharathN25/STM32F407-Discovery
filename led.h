@@ -1,8 +1,9 @@
 /**************************************************************************************************************************
  * @file     led.h
  * @author   Sharath N 
- * @brief    Header file for User LED Driver of STM32F407 Discovery Baord.
+ * @brief    Header file for USER LED in stm32F407 discovery board.
  **************************************************************************************************************************/
+
 
 #ifndef __LED_H
 #define __LED_H
