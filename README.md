@@ -1,5 +1,5 @@
 # Exploring STM32F407 Discovery Board
-The main purpose of this project is to get an insight into the STM32F407 Discovery Board, which is an ARM Cortex M4 based Microcontroller. As I started working on STM32F07 Discovery Board, initially it was difficult and confusing to understand and program this microcontroller because understanding internal structures and working of the microcontroller using datasheet of STM32F407VGT microcontroller is difficult especially if one is a beginner.
+The main purpose of this project is to get an insight into the STM32F407 Discovery Board, which is an ARM Cortex M4 based Microcontroller. As I started working on STM32F07 Discovery Board, initially it was difficult and confusing to understand and program this microcontroller because understanding internal structures and working of the microcontroller using datasheet of STM32F407VGT MCU is difficult especially if one is a beginner.
 
                                       Figure 1 : STM32F407 Discovery Board
 <img src = "Images/Figure_1_STM32F4DISCOVERY.png"  width="605" height="314" hspace="120">
