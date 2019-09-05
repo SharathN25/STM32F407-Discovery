@@ -1,4 +1,4 @@
-**********************************************************STM32F407 DISCOVERY BOARD NOTES******************************************************************
+﻿**********************************************************STM32F407 DISCOVERY BOARD NOTES******************************************************************
 
 1)Base Address of Flash Memory -> 0x0800 0000
 
@@ -291,8 +291,8 @@ Ref  : The block diagram of the SPI is shown in Figure 246. (Page 876 0f RM0090)
  
  SPI Peripheral Clock & Serial Clock
       
-	 -> There are 3 SPI peripherals. Out of which SPI1 is connected to APB2 bus and SPI2,SPI3 are connected to APB1 bus.
-	 -> SPI clock speeds are dependent on APB1/APB2. We already know APB1 bus has max 42MHz and APB2 has max 84Mhz. These are represented by peripheral
+     -> There are 3 SPI peripherals. Out of which SPI1 is connected to APB2 bus and SPI2,SPI3 are connected to APB1 bus.
+     -> SPI clock speeds are dependent on APB1/APB2. We already know APB1 bus has max 42MHz and APB2 has max 84Mhz. These are represented by peripheral
         f(pclk).
      -> So for SPI2/SPI3 the max clock speed is 42Mhz as it is hanging on APB1 bus.
      -> f(pclk) is given to SP2/SPI3. 
@@ -331,7 +331,51 @@ Ref  : The block diagram of the SPI is shown in Figure 246. (Page 876 0f RM0090)
 ***********************************************************SPI Driver Development ********************************************************************************
 
      Header file has 3 main section - 1) SPI bit definition
-	                                  2) Data structure used by SPI Driver.
-									  3) Driver exposed API.
+	                              2) Data structure used by SPI Driver.
+                                      3) Driver exposed API.
+
+ 
+    Configuring NSS
+            ->NSS is slave select pin which is typically on slave side. Master drive NSS pin to low whenever it wants to communiate with perticular slave.
+            ->In this microcontroller the NSS pin can be handled in 2 ways
+                    1)Software slave managment
+                    2)Hardware slave managemet
+
+              1)Software Slave management
+                     ->When software slave management is enabled using SSM bit in SPI_CR1 register(when SSM bit is 1), NSS pin cannot be driven high or low by
+                       external IO lines such as master. Instaed this NSS pin is handled by software by using SSI bit in SPI_CR1 register. The value of SSI bit
+                       is forced onto NSS pin and IO value of NSS is ignored.
+                       if software makes SSI=1 , then NSS = HIGH
+                                         SSI=0 , then NSS = LOW
+                     -> So when software slave management is used , SSI bit acts as "handle" to drive NSS pin. So no extra pin is needed to be connnected from master
+                        to slave.
+
+              What is the advantage of this mode?
+                      ->When there is only one master and one slave, if we use SSM then there is no need to connect one pin from master to slave , which saves one Pin.
+
+
+              2)Hardware Slave management
+                      ->When there are multiple slaves the SSM cannot be used.
+                      -> So when SSM bit is 0 - Hardware slave management is used.
+                      -> So NSS pin can be driver from external IO line, such as Gpio of master.
+                      ->When device is in master mode (page  877 of RM0090) , NSS pin is not used and must be kept high.way to do so is simply select SSM=1.
+                      
+
+    -> it is recommended to enable spi (that is -> hal_spi_enable()) after all the necessary settings are configured.
+
+
+   How SPI peripherals will interrupt the processor and how interrupt is enabled?
+            -> Table 126. SPI interrupt requests ( data sheet page 898)
+            -> This table shows on what cases the SPI peripherla can interrupt the Processor.
+            -> (Refer Notes : SPI interrrupts)
+            ->Unless we enable the TXEIE and RXNEIE interrupt in control register firmware will not get any interrupt when TXE and RXNE flags are set in status regsiter. 
+            ->"void hal_i2c_spi_irq_handler(spi_handle_t *hspi)"---> this function is called by application whenever it gets spi interrupt.
+            -> Handling SPI interruptin code (refer notes).
+
+			
+
+
+
+
 	 
  
