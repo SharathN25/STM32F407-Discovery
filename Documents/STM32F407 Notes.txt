@@ -125,7 +125,7 @@ VECTOR TABLE OF MCU.
 
 Referring : Table 61. Vector table for STM32F405xx/07xx and STM32F415xx/17xx (Page 372 of RM0090).
 
-1) There are 6 columns in Vector Table -> Position,Priority, Type of priority, Acronym, Description and Address.
+1) There are 6 columns in Vector Table : Position,Priority, Type of priority, Acronym, Description and Address.
 2) We can see that position is kept empty for all the system exceptions, system exceptions comes from processor(ARM)end.
    So vendor ST does not have control  over these. These positions are with respect to NVIC.
    Ex : Watch dog exceptions is Position 0 w.r.t to NVIC.
