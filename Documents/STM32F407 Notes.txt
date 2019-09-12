@@ -165,7 +165,7 @@ Ref: Figure 41. External interrupt/event controller block diagram (Page 380 of R
 
 Ref: Figure 42. External interrupt/event GPIO mapping (STM32F405xx/07xx and STM32F415xx/17xx) (Page 382 of RM0090)
     1) Figure 42 shows how exactly the GPIOs are delivering their interrupts to NVIC.
-	2)All the 0th Pins (PA0,PB0,PC0,PD0,PE0,PF0,PG0,PH0 and PI0) of GPIO ports are connected to EXTI1 line through MUX.
+	2)All the 0th Pins (PA0,PB0,PC0,PD0,PE0,PF0,PG0,PH0 and PI0) of GPIO ports are connected to EXTI0 line through MUX.
 	  EXTI0[3:0] bits in the SYSCFG_EXTICR1 register is used for this purpose.
 	3)In the similar way from figure 42 we can see remaining pins how they deliver their interrupts.
 	
