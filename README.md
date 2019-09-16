@@ -118,7 +118,7 @@ Before we start with GPIO in our MCU, it is necessary to know about the basic co
 
 As shown in the above figure, it has one input buffer and one output buffer along with the enabling line. When the enable line is 0, the output buffer gets activated and the input buffer is OFF. When enable is 1, the input buffer is ON and the output buffer is OFF. Buffer is nothing but two CMOS transistor connected as shown below.
 
-<img src = "Images/Figure_GPIO_Input_Output_Buffer.PNG" width="1221" height="351" hspace="30">
+<img src = "Images/Figure_GPIO_Input_Output_Buffer.PNG" width="1221" height="351" hspace="10">
 
 **Output Buffer**: When you write 1 on this buffer, due to the inverter logic 0 is given as input to two transistors and hence T1 will be activated and T2 will be deactivated. Hence pin will be pulled to high. When you write 0 to this buffer, due to the inverter logic 1 is given as input to two transistors and hence T1 will be deactivated and T2 will be activated. Hence pin will be pulled to ground(low). This is how the output buffer of GPIO works.
 
