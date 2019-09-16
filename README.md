@@ -146,3 +146,30 @@ The Output Mode with open-drain configuration is nothing but the top PMOS transi
 <img src = "Images/Figure_GPIO_Output-Mode_with_OpenDrain_State.PNG" width="650" height="330" hspace="120" >
 
 So we have a single NMOS transistor(T2) when T2 is ON the output is pulled to low. When T2 is OFF, the drain of the transistor is in floating/open state. This is the reason it is called open-drain. Hence GPIO output mode with open-drain configuration has only pull-down capability not the pull-up. So there are two states available in this configuration **Pull-Down** and **Float**. The floating state is useless. Opend drain output configuration is useless until you provide pull-up capability either by internal pull-up transistor or external pull-up transistor. That leads to the next topic which is open-drain with internal and external pull-ups.
+
+**GPIO Output Mode - Open Drain with Pull-Up**
+
+<img src = "Images/Figure_GPIO_Output_Mode_OpenDrain_With_PullUp.PNG" width="650" height="310" hspace="120" >
+
+Above figure shows the GPIO Output mode in Open drain with internal and external pull-up configuration. So to use of open-drain configuration in real-world application it has to be used along with either internal/external pull-up resistor. These days all MCU supports internal pull-up, which can be activated/deactivated using GPIO Configuration Registers.
+
+### GPIO Output Mode with Push-Pull Configuration
+When the GPIO pins are configured as input, the default state is HIGH-Z state. But when GPIO pin is configured as Output, then by default it will be in Push-Pull Configuration as shown in the below figure.
+
+<img src = "Images/Figure_GPIO_Output-Mode_With_PushPull.PNG"  width="650" height="350" hspace="120">
+
+This output configuration is called Push-Pull because the output will be pulled actively High and Low by using the two-transistors. In the push-pull configuration, there is no need for any pull-up/pull-down resistor. This configuration has two transistors. The Top transistor(PMOS) will be ON when output has to be driven HIGH. The bottom transistor(NMOS) will be ON when the output should be driven to LOW.
+
+### Optimizing I/O Power Consumption
+As discussed earlier, we know that if the pin is in the floating state then it leads to leakage current from VCC to GND(Ground). Let us consider the case where the input pin is not in the floating state,  that is it is connected to either a fixed HIGH or LOW voltage level as shown in the below figure.
+
+<img src ="Images/Figure_GPIO_Power_Optimize_1.PNG" width="650" height="350" hspace="120">
+
+Referring  from the above figure, when the pin is fixed to HIGH voltage, due to the inverter logic input to buffer will be 0, the transistor T1 is ON and T2 is OFF and hence there is no path for the current to reach the ground, in this case, leakage will not happen as current never leaks out from +VCC to Ground. When the pin is fixed to LOW, T1 is OFF and T2 is ON, in this case also current will not leak as there is no path from VCC to Ground. Let us Now Consider the floating state as shown below.
+
+<img src ="Images/Figure_GPIO_Power_Optimize_2.PNG" width="690" height="350" hspace="120">
+
+In this case, the pin input voltage is not fixed, due to the circuit noise the input voltage to pin may toggle between (70 to 50)% of VCC to 30% of VCC. That is the voltage on the pin will be in the intermediate
+region as shown in the above figure, this turns on both the transistors hence a small amount of current sinks to ground as shown. But all the modern MCUs I/O pins use Schmitt trigger to combat the noise issue.
+                                                                                        
+                                                                                        
