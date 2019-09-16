@@ -110,3 +110,39 @@ So when the push-button is pressed, **EXTI0** line goes high and also a correspo
 <img src = "Images/Figure 42_External interrupt event GPIO mapping.PNG" width="581" height="574" hspace="135" >
 
 Figure 42 shows how exactly the GPIOs are delivering their interrupts to NVIC. The 168 GPIOs are connected to the 16 external interrupt/event lines as shown above. All the 0th Pins (PA0, PB0, PC0, PD0, PE0, PF0, PG0, PH0, and PI0) of GPIO ports are connected to EXTI0 line through MUX, In a similar way from figure42, we can see that how remaining pins deliver their interrupts. The **EXTI0[3:0]** bits in the **SYSCFG_EXTICR1** register is used to select the source input for the EXTIx external interrupt.
+
+## GPIO(General Purpose Input/Output)
+Before we start with GPIO in our MCU, it is necessary to know about the basic concepts related to GPIO. These concepts are generic and can be applied to any MCU. GPIO port is a collection of a fixed number of input/output pins. Let us explore how GPIO pins work in MCU in a very simple way. Below figure shows the behind the scene implementation of GPIOs in MCU.
+
+<img src = "Images/Figure_BehindTheScene_Of_GPIO_Working.PNG"  width="401" height="235" hspace="230" >
+
+As shown in the above figure, it has one input buffer and one output buffer along with the enabling line. When the enable line is 0, the output buffer gets activated and the input buffer is OFF. When enable is 1, the input buffer is ON and the output buffer is OFF. Buffer is nothing but two CMOS transistor connected as shown below.
+
+<img src = "Images/Figure_GPIO_Input_Output_Buffer.PNG" width="1221" height="351" hspace="30">
+
+**Output Buffer**: When you write 1 on this buffer, due to the inverter logic 0 is given as input to two transistors and hence T1 will be activated and T2 will be deactivated. Hence pin will be pulled to high. When you write 0 to this buffer, due to the inverter logic 1 is given as input to two transistors and hence T1 will be deactivated and T2 will be activated. Hence pin will be pulled to ground(low). This is how the output buffer of GPIO works.
+
+**Input buffer**: We can observe here that the input buffer is simply the rotation of output buffer in 180 degrees. When the pin is driven high, T1 will be ON and  T2 will be OFF hence you will read High. When the pin is driven low, T1 will be OFF and T2 will be ON hence you will read Low.
+
+This is how the input and output mode of a GPIO pin works behind the scene with its respective buffers and enable line. This enable line is usually configured by a  GPIO control register which will be discussed later.
+
+### GPIO Input Mode with High Impedance State
+High Impedance is also called a HIGH-Z state. HIGH-Z state of an I/O pin is nothing but keeping the pin in **Floating State** i.e, neither connected to High nor connected to low voltage level as shown below.
+
+<img src = "Images/Figure_GPIO_IO_HIGH-Z_State.PNG" width="500" height="300" hspace="160" >
+
+When a microcontroller power-ups, by default all the GPIO pins will be in Input-Mode with HIGH-Z state or floating state. This applies to almost all the MCU. Keeping the pin in the Floating state can lead to leakage current which may lead to higher power consumption. This is because pin in a floating state is highly susceptible to picking up the circuit noise voltage and results in leakage current.
+
+### GPIO Input Mode with Pull-Up/Pull-Down Configuration
+Floating state of the pin can be avoided by simple internal pull-up or pull-down resistors as shown in the below figure.
+
+<img src = "Images/Figure_GPIO_InputMode_With_PullUpDown_State.PNG" width="500" height="300" hspace="160" >
+
+There is Configuration register for every GPIO port which enables you to handle these internal pull-up/pull-down registers. It is always safe to keep the unused GPIO pins in one of these states so that they are reluctant to voltage fluctuations which may lead to leakage of current.
+
+### GPIO Output Mode with Open Drain Configuration
+The Output Mode with open-drain configuration is nothing but the top PMOS transistor simply not present as shown below.
+
+<img src = "Images/Figure_GPIO_Output-Mode_with_OpenDrain_State.PNG" width="650" height="330" hspace="120" >
+
+So we have a single NMOS transistor(T2) when T2 is ON the output is pulled to low. When T2 is OFF, the drain of the transistor is in floating/open state. This is the reason it is called open-drain. Hence GPIO output mode with open-drain configuration has only pull-down capability not the pull-up. So there are two states available in this configuration **Pull-Down** and **Float**. The floating state is useless. Opend drain output configuration is useless until you provide pull-up capability either by internal pull-up transistor or external pull-up transistor. That leads to the next topic which is open-drain with internal and external pull-ups.
