@@ -188,7 +188,7 @@ The STM32F407VGT6 Microcontroller supports 9 GPIO ports(i.e, GPIOA to GPIOI). Ea
 
 <img src = "Images/Figure_GPIO_Port_Pin.png" >
 
-### GPIO Regitsers 
+## GPIO Regitsers 
 **(Refer : Section 8.4 GPIO Regitser (Page 281 in STM32F4xxx Reference Manual (RM0090))**
 
 #### 1. GPIO port mode register (GPIOx_MODER) (x = A..I/J/K)
@@ -201,7 +201,7 @@ This register is used to configure the mode of a particular GPIO pin. Before usi
 - 10: Alternate function mode -> Such as UART, SPI, I2C ect.
 - 11: Analog mode
 
-#### 2. GPIO port output speed register (GPIOx_OSPEEDR)** (x = A..I/J/K)
+### 2. GPIO port output speed register (GPIOx_OSPEEDR)** (x = A..I/J/K)
 When the GPIO pin is in the output mode, this register is used to choose the output type. 
 
 **OTy[15:0]**: Port x configuration bits (y = 0..15), These bits are written by software to configure the output type of the I/O port.
@@ -209,7 +209,7 @@ When the GPIO pin is in the output mode, this register is used to choose the out
 - 0: Output push-pull (reset state)
 - 1: Output open-drain
 
-#### 3. GPIO port output speed register (GPIOx_OSPEEDR) (x = A..I/J/K)
+### 3. GPIO port output speed register (GPIOx_OSPEEDR) (x = A..I/J/K)
 This is register is used to configure the speed of the GPIO pins.
 
 **OSPEEDRy[1:0]**: Port x configuration bits (y = 0..15), these bits are written by software to configure the I/O output speed.
@@ -225,7 +225,7 @@ This is register is used to configure the speed of the GPIO pins.
 2. But low-speed GPIO have larger (Trise ->rising edge) and (Tfall->falling edge) which we call Slew Rate when the speed is low rise and fall of GPIO is not quick enough which may not be suitable for some applications.
 3. Reference manual of this MCU claims that pins fastest toggle speed is every two clock cycle. That means if the GPIO is High and it wants to go low then it needs minimum two processor clock cycle. Let's say if MCU is running at 48Mhz then the fastest toggle speed is 24Mhz.
 
-#### 4. GPIO port pull-up/pull-down register (GPIOx_PUPDR) (x = A..I/J/K)
+### 4. GPIO port pull-up/pull-down register (GPIOx_PUPDR) (x = A..I/J/K)
 This register is used to configure internal pull-up/pull-down register on each I/O pin. Internal pull-up/pull-down registers can be configured in the GPIO pin which is in input or output mode. 
 
 Bits 2y:2y+1 **PUPDRy[1:0]**: Port x configuration bits (y = 0..15), these bits are written by software to configure the I/O pull-up or pull-down.
