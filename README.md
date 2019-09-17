@@ -191,7 +191,7 @@ The STM32F407VGT6 Microcontroller supports 9 GPIO ports(i.e, GPIOA to GPIOI). Ea
 ## GPIO Regitsers 
 **(Refer : Section 8.4 GPIO Regitser (Page 281 in STM32F4xxx Reference Manual (RM0090))**
 
-#### 1. GPIO port mode register (GPIOx_MODER) (x = A..I/J/K)
+### 1. GPIO port mode register (GPIOx_MODER) (x = A..I/J/K)
 This register is used to configure the mode of a particular GPIO pin. Before using any GPIO port we should decide its mode that is whether you want to use it as input, output, alternate functionality or analog mode.
 
 **MODERy[1:0]**: Port x configuration bits (y = 0..15), these bits are written by software to configure the I/O direction mode.
