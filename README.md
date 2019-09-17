@@ -172,7 +172,7 @@ Referring  from the above figure, when the pin is fixed to HIGH voltage, due to 
 In this case, the pin input voltage is not fixed, due to the circuit noise the input voltage to pin may toggle between (70 to 50)% of VCC to 30% of VCC. That is the voltage on the pin will be in the intermediate
 region as shown in the above figure, this turns on both the transistors hence a small amount of current sinks to ground as shown. But all the modern MCUs I/O pins use Schmitt trigger to combat the noise issue.
     
-## GPIO Programming Structure
+## GPIO Register Structure
 <img src = "Images/Figure_GPIO_Port_Governed_By_Reg.PNG" width="690" height="390" hspace="110" >
 Each GPIO port is governed by many registers as shown above. These registers may vary depending on the vendors who manufacture it. Generally in MCU GPIO port is governed by these registers. The Minimum set of registers you find in any MCU for GPIO port
 includes:
