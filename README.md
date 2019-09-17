@@ -171,5 +171,33 @@ Referring  from the above figure, when the pin is fixed to HIGH voltage, due to 
 
 In this case, the pin input voltage is not fixed, due to the circuit noise the input voltage to pin may toggle between (70 to 50)% of VCC to 30% of VCC. That is the voltage on the pin will be in the intermediate
 region as shown in the above figure, this turns on both the transistors hence a small amount of current sinks to ground as shown. But all the modern MCUs I/O pins use Schmitt trigger to combat the noise issue.
+    
+## GPIO Programming Structure
+<img src = "Images/Figure_GPIO_Port_Governed_By_Reg.PNG" width="690" height="390" hspace="110" >
+Each GPIO port is governed by many registers as shown above. These registers may vary depending on the vendors who manufacture it. Generally in MCU GPIO port is governed by these registers. The Minimum set of registers you find in any MCU for GPIO port
+includes:
+
+* **Port Direction (Mode) Register**: using which you can set the IO modes such as input, Output, Analog, etc.
+* **Port Input Data register**: Used to read from GPIO port.
+* **Port Output Data Regitser**: Used to write to a GPIO Port.
+
+In STM32F4xx series of microcontrollers, each GPIO port is governed by many configuration registers. You can find more about all different GPIO registers in **Section 8.4 GPIO Register(Page 281 in STM32F4xxx Reference Manual (RM0090))**. From STM32F407VGT6 block diagram we can see that all the GPIO ports are conected to Cortex-M4 processor via AHB1 Bus. AHB1 bus is the main system bus which can be operated at a maximum speed of 168Mhz.
                                                                                         
-                                                                                        
+### GPIO Ports and Pins of STM32F4xx
+The STM32F407VGT6 Microcontroller supports 9 GPIO ports(i.e, GPIOA to GPIOI). Each GPIO port is a group of 16 GPIO pins and each port has its own set of configuration registers. The MCU supports total 114 GPIO pins, but on the development board the manufacture brought out  5 ports (i.e, GPIOA to GPIOE). So Totally 80 Pins are available as shown below.
+
+<img src = "Images/Figure_GPIO_Port_Pin.png" >
+
+### GPIO Regitsers 
+**(Refer : Section 8.4 GPIO Regitser (Page 281 in STM32F4xxx Reference Manual (RM0090))**
+
+#### GPIO port mode register (GPIOx_MODER) (x = A..I/J/K)
+
+This register is used to configure the mode of a particular GPIO pin. Before using any GPIO port we should decide its mode that is whether you want to use it as input, output, alternate functionality or analog mode.
+
+**MODERy[1:0]**: Port x configuration bits (y = 0..15), these bits are written by software to configure the I/O direction mode.
+
+- 00: Input (reset state) -> By default.
+- 01: General purpose output mode
+- 10: Alternate function mode -> Such as UART, SPI, I2C ect.
+- 11: Analog mode
