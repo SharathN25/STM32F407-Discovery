@@ -250,3 +250,15 @@ Each GPIO Pin supports 16(AF0 to AF15) Different alternate functions. This means
 
 ### 8. RCC AHB1 peripheral clock register (RCC_AHB1ENR)
 To be able to work with any peripheral in an MCU first, you have to make sure that its peripheral clock(**fpclk**) is enabled. In STM32F4xx MCU, all the peripheral clocks are managed by RCC(Reset and Clock control) Block. GPIO port is also a peripheral and it is connected to AHB1 bus. The peripheral clock of GPIO port is derived from AHB1 bus clock. By default, all peripheral clocks are disabled to saving power, so it is important to enabling the clock before configuring or using any peripheral. The **RCC AHB1 peripheral clock enable register (RCC_AHB1ENR)** is used for this, as the name indicate this register is used to **enable/disable the clock for the peripherals** which are connected to AHB1 bus. For more details Refer **6.3.10 RCC AHB1 peripheral clock register (RCC_AHB1ENR)(Page 180 of RM0090).**
+
+## GPIO Driver Development
+### Overview of GPIO driver 
+<img src = "Images/Figure_GPIO_Driver_Overview.PNG" width="700" height="300"  hspace="80">
+
+The above figure gives an abstract idea about the GPIO driver development. The sample applications (such as blinking an LED connected to GPIO pin) will use the **GPIO driver** along with the MCU specific **startup code** to interact with the GPIO pins. The same approach can be used to develop a driver for GPIO of different MCU with slight modifications.
+
+### GPIO Driver API Requirements
+<img src = "Images/Figure_GPIO_Driver_API_Requirements.PNG" width="700" height="380"  hspace="80" >
+
+The driver code will provide the APIs to do GPIO initialization such as configure the mode, output type, speed, etc and APIs or Macros to Enable/Disables the GPIO clock, Read from GPIO pin, Write to GPIO pin and Alternate functionality configuration such as SPI, I2C, and UART, etc. Also, an API to handle Interrupts.
+
