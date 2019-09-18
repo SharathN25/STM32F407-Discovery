@@ -147,8 +147,7 @@ The Output Mode with open-drain configuration is nothing but the top PMOS transi
 
 So we have a single NMOS transistor(T2) when T2 is ON the output is pulled to low. When T2 is OFF, the drain of the transistor is in floating/open state. This is the reason it is called open-drain. Hence GPIO output mode with open-drain configuration has only pull-down capability not the pull-up. So there are two states available in this configuration **Pull-Down** and **Float**. The floating state is useless. Opend drain output configuration is useless until you provide pull-up capability either by internal pull-up transistor or external pull-up transistor. That leads to the next topic which is open-drain with internal and external pull-ups.
 
-**GPIO Output Mode - Open Drain with Pull-Up**
-
+### GPIO Output Mode - Open Drain with Pull-Up
 <img src = "Images/Figure_GPIO_Output_Mode_OpenDrain_With_PullUp.PNG" width="650" height="310" hspace="120" >
 
 Above figure shows the GPIO Output mode in Open drain with internal and external pull-up configuration. So to use of open-drain configuration in real-world application it has to be used along with either internal/external pull-up resistor. These days all MCU supports internal pull-up, which can be activated/deactivated using GPIO Configuration Registers.
