@@ -243,8 +243,8 @@ This is also a 32-bit write-only register in which only the lower 16-bits are us
 ### 7. GPIO Alternate Function Register
 This is one of the important GPIO configuration registers. This register is used to configure the alternate functionality of the particular pin of GPIO Port. In this MCU there are two alternate function registers.
 
-1. GPIO alternate function low register (GPIOx_AFRL) (x = A..I/J/K) -> Used for Pin 0 to 7.
-2. GPIO alternate function high register (GPIOx_AFRH) (x = A..I/J)  -> Used for Pin 8 to 15.
+**1. GPIO alternate function low register (GPIOx_AFRL) (x = A..I/J/K)** -> Used for Pin 0 to 7.
+**2. GPIO alternate function high register (GPIOx_AFRH) (x = A..I/J)**  -> Used for Pin 8 to 15.
 
 Each GPIO Pin supports 16(AF0 to AF15) Different alternate functions. This means that each GPIO pin can be configured into one among the 16 different alternate functions. Since there are 16 possible alternate functions for each pin, 4-bits are needed to configure each GPIO pin. So Alternate function low register is used for Pin 0 to Pin 7, whereas Alternate function high register is used for Pin 8 to Pin 15. To know about all the 16 different alternate functions -> Refer **Figure 26. Selecting an alternate function on STM32F405xx/07xx and STM32F415xx/17xx(Page 272 of RM0090).**
 
