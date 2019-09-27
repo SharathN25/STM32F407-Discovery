@@ -291,3 +291,8 @@ SPI is an interface bus commonly used to send data between Microcontroller and s
 * **Slave Select(SS)** - This line is used to select the slave device. Whenever the master wants to communicate to slaves, it pulls the corresponding slave select line to low.
 * **MOSI(Master out slave in)** - Master sends data to the slave over MOSI line.
 * **MISO(Master in Slave out)** - Slave sends the data to master over MISO line
+
+Here are some websites where you can get to know about how SPI protocol works: [SPI-Link1](https://www.allaboutcircuits.com/technical-articles/spi-serial-peripheral-interface/)  [SPI-Link2](http://www.circuitbasics.com/basics-of-the-spi-communication-protocol/)  [SPI-Link3](http://maxembedded.com/2013/11/serial-peripheral-interface-spi-basics/)
+
+
+
