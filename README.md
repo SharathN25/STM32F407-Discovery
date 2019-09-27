@@ -262,3 +262,10 @@ The above figure gives an abstract idea about the GPIO driver development. The s
 
 The driver code will provide the APIs to do GPIO initialization such as configure the mode, output type, speed, etc and APIs or Macros to Enable/Disables the GPIO clock, Read from GPIO pin, Write to GPIO pin and Alternate functionality configuration such as SPI, I2C, and UART, etc. Also, an API to handle Interrupts.
 
+### GPIO Driver Code/Files
+The two main files for the GPIO driver are **_hal_gpio_driver.h_** and **_hal_gpio_driver.c_**. The header file(**.h** file) contains 3 main sections: 
+1. GPIO Register bit definitions and macros
+2. Data structure for GPIO Pin Initialization
+3. Declaration of all Driver Exposed APIs.
+
+The source file (**.c** file) provides the function definition of all the APIs. You can find the sample LED driver to drive the on-chip user LED, which uses GPIO driver files for its imlementation. Ref: **_led.h_** and **_led.c_**. You can find some sample application in the folder **STM32F407 Sample Applications**. 
