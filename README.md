@@ -265,12 +265,12 @@ Referring to the above figure, the interrupt generated on **PA0 pin** by **butto
 
 ## GPIO Driver Development
 ### Overview of GPIO driver 
-<img src = "Images/Figure_GPIO_Driver_Overview.PNG" width="700" height="300"  hspace="80">
+<img src = "Images/Figure_GPIO_Driver_Overview.PNG" width="650" height="270"  hspace="90">
 
 The above figure gives an abstract idea about the GPIO driver development. The sample applications (such as blinking an LED connected to GPIO pin) will use the **GPIO driver** along with the MCU specific **startup code** to interact with the GPIO pins. The same approach can be used to develop a driver for GPIO of different MCU with slight modifications.
 
 ### GPIO Driver API Requirements
-<img src = "Images/Figure_GPIO_Driver_API_Requirements.PNG" width="750" height="400"  hspace="60" >
+<img src = "Images/Figure_GPIO_Driver_API_Requirements.PNG" width="690" height="380"  hspace="70" >
 
 The driver code will provide the APIs to do GPIO initialization such as configure the mode, output type, speed, etc and APIs or Macros to Enable/Disables the GPIO clock, Read from GPIO pin, Write to GPIO pin and Alternate functionality configuration such as SPI, I2C, and UART, etc. Also, an API to handle Interrupts.
 
@@ -281,3 +281,13 @@ The two main files for the GPIO driver are **_hal_gpio_driver.h_** and **_hal_gp
 3. Declaration of all Driver Exposed APIs.
 
 The source file (**.c** file) provides the function definition of all the APIs. You can find the sample LED driver to drive the on-chip user LED, which uses GPIO driver files for its imlementation. Ref: **_led.h_** and **_led.c_**. You can find some sample application in the folder **STM32F407 Sample Applications**. 
+
+## SPI (Serial Peripheral Interface)
+<img src = "Images/Figure_SPI.PNG" width="660" height="560"  hspace="100" >
+
+SPI is an interface bus commonly used to send data between Microcontroller and small peripherals such as Sensor, Memory chip, etc. It uses separate **clock** and **data** lines along with select line to choose the device it wants to communicate. The side that generates the clock is called **master** and another side is called **slave**. There is always one master(i.e MCU) and multiple slaves. SPI is a single master protocol, this means that only one central device initiates communication with multiple slaves. A slave cannot be able to change its role from slave to master.  SPI is a protocol of 4 lines, they are:
+
+* **SCLK(Clock Signal)** - The Clock is sent from master to slave through this line, all the SPI signals are synchronous to this clock.
+* **Slave Select(SS)** - This line is used to select the slave device. Whenever the master wants to communicate to slaves, it pulls the corresponding slave select line to low.
+* **MOSI(Master out slave in)** - Master sends data to the slave over MOSI line.
+* **MISO(Master in Slave out)** - Slave sends the data to master over MISO line
