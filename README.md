@@ -307,5 +307,20 @@ CPOL parameter decides the clock format to be used by the SPI peripheral. There 
 
 <img src = "Images/Figure_SPI_Inverted(CPOL=1).PNG" width="700" height="300"  hspace="70">
 
+#### Clock Phase(CPHASE)
+Clock Phase defines when the data has to be **toggled** and when the data has to **sampled** on the data lines of the SPI peripheral. Data toggling means data transition to the next bit. Data sampling means sampling data lines to capture the data as shown below.
 
+<img src = "Images/Figure_SPI_Data_Toggle_Sample.PNG" width="650" height="280"  hspace="90" >
 
+If **CPHASE = 0**, the Data will be sampled on the leading edge of the clock, IF **CPHASE=1** then the data will be sampled on trailing edge of the clock. So Phase defines at which edge the data has to be sampled and at which edge the data has to be toggled. Below figure shows a case when CPOL=1 and CPHASE =1.
+
+<img src = "Images/Figure_SPI_Data_Toggle_Sample1.PNG">
+
+Based on the combination of CPHASE and CPOL there are 4 different modes in SPI, you can find more about SPI modes here [SPI MODES](https://www.allaboutcircuits.com/technical-articles/spi-serial-peripheral-interface/)
+
+## SPI functional description
+**Refer to Figure 246. SPI block diagram (Page 876 of RM0090)**
+
+<img src = "Images/Figure_SPI_Block_Diagram.PNG" width="630" height="490"  hspace="120"  >
+
+From block diagram we can see that 4 pins are coming out - **MOSI**, **MISO**, **SCLK** and **NSS(Slave select)**. The heart of the SPI block is the **shift register** with two **buffers**, one is the **TX buffer** another is the **RX Buffer**. TX and RX buffer are accessible over APB1/APB2 Bus. To transmit the data, the data has to be written into the TX buffer, whose content then get loaded to shift register which is then transmitted. When the shift register receives the complete byte, it transfers it to RX buffer where we can read it. Then we have a couple of control register **SPI_CR1**, **SPI_CR2** which are used to control SPI operations and one status register **SPI_SR**, it holds the status of various SPI events such TX event, RX event, and error event, etc. The clock is produced by **baud rate generator** block which is controlled by BR0, BR1, BR2 bits in control register.
