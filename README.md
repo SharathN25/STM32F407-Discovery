@@ -354,3 +354,35 @@ To understand these **read** and **write** operation refer the above figure, the
 ### 4. SPI status register (SPI_SR)
 The First two bits holds **TXE** and **RXNE** events. When TX buffer is empty TXE bit is set to 1. When RX buffer is not-empty RXNE bit is set. The TXE and RXNE bits are very useful during data transfer, firmware should either poll these bits or get interrupt upon setting these bits during data transmission. The FRE, OVR, MODF, CRC ERR, UDR are used to indicate error events.  These flags are set when the corresponding error occurs. BSY (busy flag), is set whenever SPI is doing TX/RX.
 
+## Configuring NSS(Slave Select) Pin
+The **NSS pin** i.e, the **Slave select pin**  which is typically on the slave side is used to select the slave for communication. The Master drives the **NSS** pin of the slave to **low** whenever it wants to communicate with that particular slave as shown below.
+
+<img src = "Images/Figure_SPI_NSS_Pin.PNG" width="600" height="300"  hspace="120">
+
+In STM32F4xx based microcontroller, the NSS pin can be handled in 2 ways.
+1. Software Slave Management
+2. Hardware Slave Management
+
+### 1.Software Slave management
+When software slave management is enabled using **SSM** bit in **SPI_CR1** register(i.e., when SSM bit is 1), the **NSS** pin cannot be driven **high** or **low** by external IO lines from  other devices such as master, instead this NSS pin is handled by software by using **SSI** bit in **SPI_CR1** register. The value of SSI bit is forced onto the NSS pin and the IO value of NSS is ignored.
+
+* If software makes **SSI=1**, then **NSS** pin goes **HIGH**.
+* If software makes **SSI=0**, then **NSS** pin goes **LOW**.
+
+So when software slave management is used, SSI bit acts as **handle** to drive **NSS** pin. So no extra pin is needed to be connected from master to slave. The advantage of using software slave management is that when there are only one master and one slave, then there is no need to connect a pin from master to slave to drive the NSS pin, which saves one Pin.
+
+### 2. Hardware Slave management
+When there are multiple slaves, then SSM(Software slave management) cannot be used. So when you make SSM =0, then the slave will be in **hardware slave select mode**, which means that NSS pin can be driven low by using external IO pins such as masters GPIO pins as shown below, the master should driver the NSS pin of the slave to LOW before communicating with that slave.
+
+<img src = "Images/Figure_SPI_NSS_PULL_LOW.PNG" width="600" height="350"  hspace="120" >
+
+When the device is in Master-mode (**refer to page 877 of RM0090**), the NSS pin is not used and must be kept high. The way to do so is simply select SSM=1. 
+
+**Note**: It is recommended to enable SPI (that is **hal_spi_enable()**) after all the necessary settings are configured for a given SPI peripheral.
+
+## SPI Interrupt Handling
+Let us understand how the SPI peripheral will interrupt the processor. Please refer section **28.3.11 SPI interrupts (Page 898 of RM0090)** . 
+
+<img src = "Images/Figure_SPI_Interrupt_Request.PNG" width="650" height="280"  hspace="110"  >
+
+The above table.126  is telling us that SPI peripheral can interrupt the processor in various cases. So when **Transmit buffer empty** event happens, the SPI peripheral will interrupt the processor only if you enable the control bit **TXEIE**. Similarly, if **Receive buffer not empty flag** event occurs, the SPI peripheral will interrupt the processor only when control bit **RXNEIE** is enabled. In the same way, the SPI peripheral will interrupt the processor when **error events** happen only when control bit **ERRIE** is enabled. 
