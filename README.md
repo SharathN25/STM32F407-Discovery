@@ -68,6 +68,18 @@ From above clock tree we can see that **HSI RC** is 16Mhz internal Clock, and an
 
 By default MCU uses HSI (i.e internal RC Oscillator) as SYSCLK, Which means after reset HSI is used as SYSCLK Source. Before using any peripheral its clock should be enabled. Referring MUC Block Diagram, all different peripheral drives the clock from bus which it is connected. By default almost all the peripheral are deactive, which means there clocks are not enabled. **RCC**(Reset and clock Control) engine of MCU gives various registers to enable and disable various peripheral clocks. For more information refer RCC section of STM32F4xxx Reference Manual (RM0090), page-213.  
 
+### Clocking the MCU using External Crystal Oscillator
+As explained before, you can connect (4 to 26Mhz) crystal oscillator to MCU. In STM32 board manufacturer has connected 8Mhz Crystal. Even though it is connected its useless as its disabled. Before using an external oscillator, we need to enable it by using **RCC Clock Control Register(RCC_CR)**. Refer  **7.3.1 RCC clock control register (RCC_CR) (page 224 of RM0090) **.  Referring to the **RCC_CR** Register:
+
+* Bit 17 and 16 are **HSERDY** and **HSE ON** respectively
+* To enable HSE, HSEON bit is made 1, then you have to wait until the HSERDY flag becomes 1, which indicates the HSE oscillator is ready to use. It important to wait until HSERDY flag is set.
+* Now HSE is ready but it is not yet set as **SYSCLK**(System Clock).
+
+So to set HSE as System clock,  **RCC clock configuration register (RCC_CFGR)** is used.  Refer **7.3.3 RCC clock configuration register (RCC_CFGR)(page 228 of RM0090)**.  Referring RCC_CFGR, bit 0 and 1 are used to switch system clock. 
+
+* If **Bit1:0 SW**  = 01, then HSE oscillator selected as the system clock .
+* Once we do this HSE will be used as a system clock
+
 ## Vector Table
 It is a table of Vectors. Generally, Vectors are related to directions. We know that **VECTORS** in physics has both magnitude and direction. In our context we can compare **pointers** and **direction**, as pointers will point to certain addresses. So we can say that Vector table is a table which holds the specific addresses. It contains the addresses of **Exception Handlers**. Here system exceptions(these are MCU internally generated) and Interrupts(Which are external) are collectively called as exceptions.
 
