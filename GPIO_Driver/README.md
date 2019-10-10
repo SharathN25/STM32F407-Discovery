@@ -1,7 +1,8 @@
 ## GPIO(General Purpose Input/Output)
 Before we start with GPIO in our MCU, it is necessary to know about the basic concepts related to GPIO. These concepts are generic and can be applied to any MCU. GPIO port is a collection of a fixed number of input/output pins. Let us explore how GPIO pins work in MCU in a very simple way. Below figure shows the behind the scene implementation of GPIOs in MCU.
 
-<img src = "Images/Figure_BehindTheScene_Of_GPIO_Working.PNG"  width="401" height="235" hspace="230" >
+<img src = "STM32F407-Discovery
+/Images/Figure_BehindTheScene_Of_GPIO_Working.PNG"  width="401" height="235" hspace="230" >
 
 As shown in the above figure, it has one input buffer and one output buffer along with the enabling line. When the enable line is 0, the output buffer gets activated and the input buffer is OFF. When enable is 1, the input buffer is ON and the output buffer is OFF. Buffer is nothing but two CMOS transistor connected as shown below.
 
