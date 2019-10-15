@@ -113,3 +113,19 @@ We can also see the **vector addresses** from the vector table, for example for 
 
 The above vector details are carefully written such that each ISR address fall into respective vector address, for example, the address of **SPI2_Handler** will be stored in the address **0x000000D0**. So all we need to do is just define the function SPI2_Handler in your application or driver code. Also, this ISR gets called during the various events listed in **Table 126. SPI interrupt request**, so the driver has to decode which event occurred before handling the interrupt.
 
+## SPI Driver Development
+### Overview of SPI driver
+<img src = "SPI_Images/Figure_SPI_Driver_Overview.PNG" width="650" height="300" hspace="110" >
+
+The above figure gives an abstract idea about SPI driver development. The sample applications will use the **SPI driver** along with the MCU specific **startup code** to interact with the  SPI Peripheral. The same approach can be used as a template to develop the driver for any STM32F4xx series MCU with slight modification.
+
+### SPI Driver API requirements
+<img src = "SPI_Images/Figure_SPI_API_Requirements.PNG" width="700" height="370" hspace="80" >
+
+The driver code will provide the APIs to initialize the given SPI peripheral. By using initialization API, the applications can configure SPI mode, Data size, Clock speed, Slave Select management, etc. The driver code will also provide separate TX and RX APIs for both slave and master modes and also an API for SPI interrupt handling.
+
+### SPI Pin Packs
+The STM32F407xx MCU Supports 3 SPI peripherals. The SPI1 peripheral is connected to the APB2 bus as discussed earlier and you can bring out **SPI1 signals** on to **2 different pin packs**. SPI2 is connected to the APB1 bus and you can bring out **SPI2 signals** on to **3 different pin packs**. Finally, SPI3 peripheral is also connected to the ABP1 bus and you can bring out **SPI3** signals on to **2 different pin packs** as shown below.
+
+<img src = "SPI_Images/Figure_SPI_Pin_Packs.PNG" >
+
