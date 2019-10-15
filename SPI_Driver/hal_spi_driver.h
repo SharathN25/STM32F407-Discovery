@@ -120,9 +120,9 @@
   */
 typedef enum
 {
-	HAL_SPI_STATE_RESET	       = 0x00,   /* SPI not yet initialized or disabled */
-	HAL_SPI_STATE_READY        = 0x01,   /* SPI initialized and ready to use */
-	HAL_SPI_STATE_BUSY         = 0x02,   /* SPI Process is going on */
+  HAL_SPI_STATE_RESET	     = 0x00,   /* SPI not yet initialized or disabled */
+  HAL_SPI_STATE_READY        = 0x01,   /* SPI initialized and ready to use */
+  HAL_SPI_STATE_BUSY         = 0x02,   /* SPI Process is going on */
   HAL_SPI_STATE_BUSY_TX      = 0x12,   /* Data transmission process is ongoing */
   HAL_SPI_STATE_BUSY_RX      = 0x22,   /* Data reception process in ongoing */
   HAL_SPI_STATE_BUSY_TX_RX   = 0x32,   /* Data transmission and eception process in ongoing */
