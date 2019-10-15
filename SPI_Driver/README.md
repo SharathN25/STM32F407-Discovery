@@ -130,3 +130,10 @@ The STM32F407xx MCU Supports 3 SPI peripherals. The SPI1 peripheral is connected
 <img src = "SPI_Images/Figure_SPI_Pin_Packs.PNG" >
 
 ### SPI Driver Code/Files
+The two main files for the SPI driver are **_hal_spi_driver.h_** and **_hal_spi_driver.c_**. The header file(**.h** file) contains 3 main sections: 
+
+1. SPI Register bit definitions and macros
+2. Data structure used for SPI
+3. Declaration of all Driver Exposed APIs.
+
+The source file (**.c** file) provides the function definition of all the APIs.
