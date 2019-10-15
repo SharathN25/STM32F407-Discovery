@@ -8,7 +8,7 @@ SPI is an interface bus commonly used to send data between Microcontroller and s
 * **MOSI(Master out slave in)** - Master sends data to the slave over MOSI line.
 * **MISO(Master in Slave out)** - Slave sends the data to master over MISO line
 
-Here are some websites where you can get to know about how SPI protocol works: [SPI-Link1](https://www.allaboutcircuits.com/technical-articles/spi-serial-peripheral-interface/)  [SPI-Link2](http://www.circuitbasics.com/basics-of-the-spi-communication-protocol/)  [SPI-Link3](http://maxembedded.com/2013/11/serial-peripheral-interface-spi-basics/)
+Here are some websites where you can get to know about how SPI protocol works: [SPI-Link1](https://www.allaboutcircuits.com/technical-articles/spi-serial-peripheral-interface/)   [SPI-Link2](http://www.circuitbasics.com/basics-of-the-spi-communication-protocol/)   [SPI-Link3](http://maxembedded.com/2013/11/serial-peripheral-interface-spi-basics/)
 
 ### Significance of Clock phase and Clock polority
 Clock Phase and Clock Polarity are two most important terminologies used in the SPI protocol. These are very important parameters which need to be configured before using the SPI peripherals.
