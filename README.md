@@ -124,4 +124,7 @@ So when the push-button is pressed, **EXTI0** line goes high and also a correspo
 
 Figure 42 shows how exactly the GPIOs are delivering their interrupts to NVIC. The 168 GPIOs are connected to the 16 external interrupt/event lines as shown above. All the 0th Pins (PA0, PB0, PC0, PD0, PE0, PF0, PG0, PH0, and PI0) of GPIO ports are connected to EXTI0 line through MUX, In a similar way from figure42, we can see that how remaining pins deliver their interrupts. The **EXTI0[3:0]** bits in the **SYSCFG_EXTICR1** register is used to select the source input for the EXTIx external interrupt.
 
+## You can find all details regarding different peripherals of STM32F407 MCU below
 
+* [GPIO](https://github.com/SharathN25/STM32F407-Discovery/tree/master/GPIO_Driver) - General Purpose Input and Output
+* [SPI](https://github.com/SharathN25/STM32F407-Discovery/tree/master/SPI_Driver) - Serial Peripheral Interface
