@@ -55,6 +55,8 @@ As shown in the above figure, 55 in binary form has 5 One's in it hence parity i
 
 * If the number has an odd number of 1's in its binary form, then the parity bit is made 0 so that the total number of 1's including parity bit is odd as shown below.
 
+
+
 <img src = "UART_Images/Figure_UART_Odd_Parity2.PNG" width="600" height="220" hspace="150" >
 
 ### USART Functional Block Diagram
@@ -65,5 +67,13 @@ As shown in the above figure, 55 in binary form has 5 One's in it hence parity i
 This hardware block can be used for both **synchronous** and **asynchronous** modes. The 4 important pins which are used in UART communication are TX, RX, RTS, and CTS. If this hardware block is used in synchronous mode then serial clock **CK** is used. The UART is full-duplex hence we can transmit and receive simultaneously.  For TX and RX functionality there are two data registers- **TDR Transmit data register)** and **RDR(receive data register)**. Each data register has its associated shift register. A couple of Control registers used to control the TX and RX block. At the bottom section of the figure, we can see the baud-rate generator. USART_BRR register must be configured with correct DIV_Mantissa and DIV_Fraction to produce the desired baud rate.
 
 #### UART Peripheral Clock
+Referring [STM32F407VGT Block Diagram](https://github.com/SharathN25/STM32F407-Discovery#overview-of-stm32f407vgt6-microcontroller),
+we can see that **USART1** and **USART6** are connected to **APB2(Max 84Mhz)** Bus, ideally these two peripheral should be able to run at 84Mhz, but when the microcontroller is powered by internally RC oscillator of 16Mhz, maximum peripheral clock that the USART hardware get is 16Mhz as shown below.
 
+<img src = "UART_Images/Figure_UART_Peripheral_Clock.PNG" width="580" height="280" hspace="150" >
 
+The **USART2**, **USART3**, **UART4** and **UART5** are connected to **APB1(Max 42Mhz)** Bus. This peripheral clock frequency is used by the UART baud-rate generation block to produce different baud-rates.
+ 
+ 
+### UART Transmitter
+<img src = "UART_Images/Figure_UART_Transmitter.PNG" 
