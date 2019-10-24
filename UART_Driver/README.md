@@ -57,3 +57,8 @@ As shown in the above figure, 55 in binary form has 5 One's in it hence parity i
 
 <img src = "UART_Images/Figure_UART_Odd_Parity2.PNG" width="600" height="220" hspace="150" >
 
+## USART Functional Block Diagram
+**Refer : Figure 296. USART block diagram (Page 968 of RM0090)** 
+
+<img src = "UART_Images/Figure_UART_Functional_Block_Diagram.PNG">
+
