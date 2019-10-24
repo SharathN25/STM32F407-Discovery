@@ -76,4 +76,17 @@ The **USART2**, **USART3**, **UART4** and **UART5** are connected to **APB1(Max 
  
  
 ### UART Transmitter
-<img src = "UART_Images/Figure_UART_Transmitter.PNG" 
+<img src = "UART_Images/Figure_UART_Transmitter.PNG" width="350" height="230" hspace="250" >
+
+The Heart of the transmitter is **Transmit Shift register**, where parallel data is converted into serial data. Transmit shift register obtain data from *TDR*,  TDR is loaded with data by the software. Data is not loaded into that Transmit shift register until a stop bit is transmitted from the previous load. As soon as the last bit is transmitted the new data is loaded into shift register from TDR.
+
+#### Steps to set up UART data transmission
+1. Program the M bit in the USART_CR1 register to define the word length. There are options for 9bit or 8bit.
+2. Program the number of STOP bits in the USART_CR2 register.
+3. Select the desired baud rate using the USART_BRR register. Before baud rate selection you have to see **Table 134. Error calculation for programmed baud rates at fPCLK = 8 MHz or fPCLK = 12 MHz, oversampling by 16(1) (page 980 of RM0090)** and you must know your peripheral clock frequency because peripheral frequency puts a limit on the baud rate which you can generate.
+4.  Set the TE bit in the USART_CR1 to enable the Transmit block.
+5. Now enable the USART by writing the UE bit in USART_CR1 register to 1.
+6. If the TXE flag is set, then write data bytes to send the USART_DR register. Repeat this for each data to be transmitted.
+7. After writing the last data into the USART_DR register, wait until TC=1. This indicates that the transmission of the last frame is complete.
+
+**Note:** After transmission if software wants to disable USART then it has to be done after TC=1.(TC stands for Transmission Complete).
