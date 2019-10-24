@@ -30,3 +30,30 @@ The baud rate can be just about any value, the only requirement is that both tra
 <img src = "UART_Images/FIgure_UART_Synch_Bits.PNG" width="680" height="270" hspace="90" >
 
 The start and stop bits mark the start and end of a frame. There is always one start bit but stop bit is configurable to 1 or 2 bits, in STM32F4xx MCU we can even choose 1.5 bits. The start bit is always indicated by an idle line going from high to low, Stop bit is indicated by the transition back to idle state by holding the line high.
+
+### UART Parity
+Adding the parity bit is the simplest method of error detection. The Parity is simply the number of One's(1's) present in the binary form of a number.
+
+<img src ="UART_Images/Figure_UART_Parity.PNG" width="500" height="100" hspace="200">
+
+As shown in the above figure, 55 in binary form has 5 One's in it hence parity is 5. There are two options in parity, one is Even parity and another is Odd Parity.
+
+#### Even Parity
+* If Even parity option is selected, then if the number has an odd number of 1's in the binary form, the parity bit is made 0, so that total number of bits including the parity bit has an even number of 1's as shown below.
+
+<img src = "UART_Images/Figure_UART_Even_Parity1.PNG" width="600" height="220" hspace="150" >
+
+* If the number has an even number of 1's in the binary form, then the parity bit is made 0, so that total number of 1's in the number including parity bit is even as shown below. 
+
+<img src = "UART_Images/Figure_UART_Even_Parity2.PNG" width="600" height="220" hspace="150" >
+
+
+#### Odd Parity
+* If odd parity option is selected, then if the number has even number of 1's in its binary form, then the  parity bit is made 1 so that total number of bits including  parity bit becomes odd as shown below
+
+<img src = "UART_Images/Figure_UART_Odd_Parity1.PNG" width="600" height="220" hspace="150" >
+
+* If the number has an odd number of 1's in its binary form, then the parity bit is made 0 so that the total number of 1's including parity bit is odd as shown below.
+
+<img src = "UART_Images/Figure_UART_Odd_Parity2.PNG" width="600" height="220" hspace="150" >
+
