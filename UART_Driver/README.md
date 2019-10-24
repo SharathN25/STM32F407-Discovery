@@ -57,8 +57,13 @@ As shown in the above figure, 55 in binary form has 5 One's in it hence parity i
 
 <img src = "UART_Images/Figure_UART_Odd_Parity2.PNG" width="600" height="220" hspace="150" >
 
-## USART Functional Block Diagram
+### USART Functional Block Diagram
 **Refer : Figure 296. USART block diagram (Page 968 of RM0090)** 
 
-<img src = "UART_Images/Figure_UART_Functional_Block_Diagram.PNG">
+<img src = "UART_Images/Figure_UART_Functional_Block_Diagram.PNG" width="700" height="700" hspace="80">
+
+This hardware block can be used for both **synchronous** and **asynchronous** modes. The 4 important pins which are used in UART communication are TX, RX, RTS, and CTS. If this hardware block is used in synchronous mode then serial clock **CK** is used. The UART is full-duplex hence we can transmit and receive simultaneously.  For TX and RX functionality there are two data registers- **TDR Transmit data register)** and **RDR(receive data register)**. Each data register has its associated shift register. A couple of Control registers used to control the TX and RX block. At the bottom section of the figure, we can see the baud-rate generator. USART_BRR register must be configured with correct DIV_Mantissa and DIV_Fraction to produce the desired baud rate.
+
+#### UART Peripheral Clock
+
 
