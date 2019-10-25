@@ -732,11 +732,12 @@ UART Receiver
 	   
 	   
 USART INTERRUPT
-Ref : Figure 320. USART interrupt mapping diagram (page 1006 of RM0090)
-
-    ->From figure we can see that, only one line is going to NVIC of the processor. All the different event of USART will trigger an interrupt on this line.
-	->IRQ number of this line is 34. 
-	-> Table 147. USART interrupt requests - gives various USART interrupts.
+**Refer : Figure 320. USART interrupt mapping diagram (page 1006 of RM0090)**
+<UART_Interrupt>
+From figure we can see that, only one line is going to NVIC of the processor. All the different event of USART will trigger an interrupt on this line.
+IRQ number of this line is 34, that means on 34th position or line number of NVIC the UART interrupt line is connected. The **Table 147** gives various 
+USART interrupts.
+<Table 147>
 	
 	
 	
