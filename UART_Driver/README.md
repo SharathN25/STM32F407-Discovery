@@ -30,3 +30,63 @@ The baud rate can be just about any value, the only requirement is that both tra
 <img src = "UART_Images/FIgure_UART_Synch_Bits.PNG" width="680" height="270" hspace="90" >
 
 The start and stop bits mark the start and end of a frame. There is always one start bit but stop bit is configurable to 1 or 2 bits, in STM32F4xx MCU we can even choose 1.5 bits. The start bit is always indicated by an idle line going from high to low, Stop bit is indicated by the transition back to idle state by holding the line high.
+
+### UART Parity
+Adding the parity bit is the simplest method of error detection. The Parity is simply the number of One's(1's) present in the binary form of a number.
+
+<img src ="UART_Images/Figure_UART_Parity.PNG" width="500" height="100" hspace="200">
+
+As shown in the above figure, 55 in binary form has 5 One's in it hence parity is 5. There are two options in parity, one is Even parity and another is Odd Parity.
+
+#### Even Parity
+* If Even parity option is selected, then if the number has an odd number of 1's in the binary form, the parity bit is made 0, so that total number of bits including the parity bit has an even number of 1's as shown below.
+
+<img src = "UART_Images/Figure_UART_Even_Parity1.PNG" width="600" height="220" hspace="150" >
+
+* If the number has an even number of 1's in the binary form, then the parity bit is made 0, so that total number of 1's in the number including parity bit is even as shown below. 
+
+<img src = "UART_Images/Figure_UART_Even_Parity2.PNG" width="600" height="220" hspace="150" >
+
+
+#### Odd Parity
+* If odd parity option is selected, then if the number has even number of 1's in its binary form, then the  parity bit is made 1 so that total number of bits including  parity bit becomes odd as shown below
+
+<img src = "UART_Images/Figure_UART_Odd_Parity1.PNG" width="600" height="220" hspace="150" >
+
+* If the number has an odd number of 1's in its binary form, then the parity bit is made 0 so that the total number of 1's including parity bit is odd as shown below.
+
+
+
+<img src = "UART_Images/Figure_UART_Odd_Parity2.PNG" width="600" height="220" hspace="150" >
+
+### USART Functional Block Diagram
+**Refer : Figure 296. USART block diagram (Page 968 of RM0090)** 
+
+<img src = "UART_Images/Figure_UART_Functional_Block_Diagram.PNG" width="700" height="700" hspace="80">
+
+This hardware block can be used for both **synchronous** and **asynchronous** modes. The 4 important pins which are used in UART communication are TX, RX, RTS, and CTS. If this hardware block is used in synchronous mode then serial clock **CK** is used. The UART is full-duplex hence we can transmit and receive simultaneously.  For TX and RX functionality there are two data registers- **TDR Transmit data register)** and **RDR(receive data register)**. Each data register has its associated shift register. A couple of Control registers used to control the TX and RX block. At the bottom section of the figure, we can see the baud-rate generator. USART_BRR register must be configured with correct DIV_Mantissa and DIV_Fraction to produce the desired baud rate.
+
+#### UART Peripheral Clock
+Referring [STM32F407VGT Block Diagram](https://github.com/SharathN25/STM32F407-Discovery#overview-of-stm32f407vgt6-microcontroller),
+we can see that **USART1** and **USART6** are connected to **APB2(Max 84Mhz)** Bus, ideally these two peripheral should be able to run at 84Mhz, but when the microcontroller is powered by internally RC oscillator of 16Mhz, maximum peripheral clock that the USART hardware get is 16Mhz as shown below.
+
+<img src = "UART_Images/Figure_UART_Peripheral_Clock.PNG" width="580" height="280" hspace="150" >
+
+The **USART2**, **USART3**, **UART4** and **UART5** are connected to **APB1(Max 42Mhz)** Bus. This peripheral clock frequency is used by the UART baud-rate generation block to produce different baud-rates.
+ 
+ 
+### UART Transmitter
+<img src = "UART_Images/Figure_UART_Transmitter.PNG" width="350" height="230" hspace="250" >
+
+The Heart of the transmitter is **Transmit Shift register**, where parallel data is converted into serial data. Transmit shift register obtain data from *TDR*,  TDR is loaded with data by the software. Data is not loaded into that Transmit shift register until a stop bit is transmitted from the previous load. As soon as the last bit is transmitted the new data is loaded into shift register from TDR.
+
+#### Steps to set up UART data transmission
+1. Program the M bit in the USART_CR1 register to define the word length. There are options for 9bit or 8bit.
+2. Program the number of STOP bits in the USART_CR2 register.
+3. Select the desired baud rate using the USART_BRR register. Before baud rate selection you have to see **Table 134. Error calculation for programmed baud rates at fPCLK = 8 MHz or fPCLK = 12 MHz, oversampling by 16(1) (page 980 of RM0090)** and you must know your peripheral clock frequency because peripheral frequency puts a limit on the baud rate which you can generate.
+4.  Set the TE bit in the USART_CR1 to enable the Transmit block.
+5. Now enable the USART by writing the UE bit in USART_CR1 register to 1.
+6. If the TXE flag is set, then write data bytes to send the USART_DR register. Repeat this for each data to be transmitted.
+7. After writing the last data into the USART_DR register, wait until TC=1. This indicates that the transmission of the last frame is complete.
+
+**Note:** After transmission if software wants to disable USART then it has to be done after TC=1.(TC stands for Transmission Complete).
