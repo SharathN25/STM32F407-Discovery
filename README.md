@@ -127,4 +127,5 @@ Figure 42 shows how exactly the GPIOs are delivering their interrupts to NVIC. T
 ## You can find all details regarding different peripherals of STM32F407 MCU below
 
 * [GPIO](https://github.com/SharathN25/STM32F407-Discovery/tree/master/GPIO_Driver) - General Purpose Input and Output
-* [SPI](https://github.com/SharathN25/STM32F407-Discovery/tree/master/SPI_Driver) - Serial Peripheral Interface
+* [SPI](https://github.com/SharathN25/STM32F407-Discovery/tree/master/SPI_Driver) - Serial Peripheral Interface]
+* [USART/UART](https://github.com/SharathN25/STM32F407-Discovery/blob/master/UART_Driver/README.md#usartuniversal-synchronous-asynchronous-receiver-transmitter-and-uartuniversal-asynchronous-receiver-transmitter)
