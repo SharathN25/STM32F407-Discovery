@@ -80,7 +80,7 @@ The **USART2**, **USART3**, **UART4** and **UART5** are connected to **APB1(Max 
 
 The Heart of the transmitter is **Transmit Shift register**, where parallel data is converted into serial data. Transmit shift register obtain data from *TDR*,  TDR is loaded with data by the software. Data is not loaded into that Transmit shift register until a stop bit is transmitted from the previous load. As soon as the last bit is transmitted the new data is loaded into shift register from TDR.
 
-#### Steps to set up UART data transmission
+#### Steps to set up UART Data Transmission
 1. Program the M bit in the USART_CR1 register to define the word length. There are options for 9bit or 8bit.
 2. Program the number of STOP bits in the USART_CR2 register.
 3. Select the desired baud rate using the USART_BRR register. Before baud rate selection you have to see **Table 134. Error calculation for programmed baud rates at fPCLK = 8 MHz or fPCLK = 12 MHz, oversampling by 16(1) (page 980 of RM0090)** and you must know your peripheral clock frequency because peripheral frequency puts a limit on the baud rate which you can generate.
@@ -90,3 +90,65 @@ The Heart of the transmitter is **Transmit Shift register**, where parallel data
 7. After writing the last data into the USART_DR register, wait until TC=1. This indicates that the transmission of the last frame is complete.
 
 **Note:** After transmission if software wants to disable USART then it has to be done after TC=1.(TC stands for Transmission Complete).
+
+### UART Receiver
+<img src = "UART_Images/Figure_UART_Receiver.PNG" width="350" height="230" hspace="250" >
+
+The heart of the Receiver is the **Receive shift register**, where the serial data is converted into parallel data. After sampling the RX pin for the stop bit, received data bits in the shift register are transferred to the **RDR**.
+
+#### Steps to set up UART Data Reception
+1. Program the M bit in the USART_CR1 register to define the word length. Both transmitter and receiver must agree on the word length.
+2. Program the number of STOP bits in the USART_CR2 register.
+3. Select the desired baud rate using the USART_BRR register. Baud rate must be the same for both UART Transmitter and UART Reciever. 
+4. Enable the USART by writing the UE bit in the USART_CR1 register to 1.
+5. Set the RE bit in the USART_CR1 to enable the Receive block.
+6. Once the receiver block is enabled it starts searching for a start bit. When a character is received wait until the RXNE flag is set, then read the RDR.
+7. RXNE flag must be cleared by reading the data register, before the end of reception of the next character to avoid an overrun error.
+
+### USART Interrupts
+**Refer to Figure 320. USART interrupt mapping diagram (page 1006 of RM0090)**
+
+<img src = "UART_Images/Figure_UART_Interrupt_Map.PNG" >
+
+From the figure, we can see that only one line is going to NVIC of the processor. All the different events of USART will trigger an interrupt on this line. IRQ number of this line is 34, which means on 34th position or line number of NVIC the UART interrupt line is connected. The **Table 147** gives various  USART interrupts as shown below.
+
+<img src = "UART_Images/Figure_UART_Interrupt_Request.PNG" width="700" height="350" hspace="100">
+
+### USART Registers
+**Refer: Section 30.6 USART Registers (Page 1007 of RM0090)**.
+
+#### 1. Control register 1 (USART_CR1)
+* **TE(Transmitter enable)** and **RE(Receiver enable)** field are used to enable TX block and RX block respectively.
+* **IDLEIE** - IDLE interrupt enable, **RXNEIE** - RXNE interrupt enable, **TCIE** - Transmission complete interrupt enable and **TXEIE** - TXE interrupt enable.
+* **PEIE(PE interrupt enable)** - During transmission, if parity error occurs and parity flag is set, in this case, if PEIE is enabled then parity interrupt occurs.
+* **PS(Parity selection)** - This bit selects the odd or even parity when the parity generation/detection is enabled (PCE set). So this PS bit is valid only when **PCE** bit enabled.
+* **M**: Word length, **UE**: USART enable
+* **OVER8**: Oversampling mode - oversampling is used by the receiver engine to sample RX.
+
+#### 2. Control register 2 (USART_CR2)
+This register is used to control the synchronous mode of USART communication.
+
+#### 3. Control register 3 (USART_CR3)   
+Used to configure **CTS** and **RTS** and error interrupts. It is also used to set peripheral DMA. The bit **EIE(Error interrupt enable)** - used to enable error interrupts such as frame error, 
+noise error, overrun error, etc.
+
+#### 4. Data register (USART_DR)
+As the USART is a full duplex, there are two data registers. The **TDR **provides a parallel interface between the **internal bus** and **output shift register**, **RDR** provides a parallel interface between the **internal bus** and **input shift register**. TDR and RDR are not directly accessible by software, but they are accessible by  **Data register (USART_DR)**.
+
+**Behind the Scene working of Data Register**
+
+<img src = "UART_Images/Figure_UART_Data_Register.PNG" width="680" height="400" hspace="100">
+
+You can think of **USART_DR** as a window to peek into the **TDR**and **RDR**. The above figure shows how data register works.  A write to a Data register always loads the data into the TDR register and a read from the Data Register always returns the value of the RDR register.
+
+#### 5. Status register (USART_SR)
+As you know status register is used to hold the various flags during the data communication. The UART peripheral has only one status register in which only 9-bits are used and rest are reserved. 
+* **PE(Parity Error)**- This bit is set when a parity error occurs in receiver mode. This bit also triggers interrupts if PEIE is enabled in CR1.
+* **FE:(Framing Error)** - This bit is set by hardware when a de-synchronization, excessive noise or a break character is detected.     
+* **NF:(Noise detected flag )**- This bit is set by hardware when noise is detected on a received frame.
+* **ORE: Overrun error**
+* **IDLE: IDLE line detected**
+* **RXNE:(Read data register not empty)** - This bit is set by hardware when the content of the RDR shift register has been transferred to the 
+USART_DR register. So Firmware has to wait until this bit is set to read the DR. 
+* **TC(Transmission complete)** - firmware has to wait until TC =1 to disable UART after the transmission is completed. 
+* **TXE(Transmit data register empty)**- Set when TDR is empty. It is cleared by a write to the USART_DR register.
