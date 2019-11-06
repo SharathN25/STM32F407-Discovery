@@ -152,3 +152,8 @@ As you know status register is used to hold the various flags during the data co
 USART_DR register. So Firmware has to wait until this bit is set to read the DR. 
 * **TC(Transmission complete)** - firmware has to wait until TC =1 to disable UART after the transmission is completed. 
 * **TXE(Transmit data register empty)**- Set when TDR is empty. It is cleared by a write to the USART_DR register.
+
+#### 6. Baud rate register (USART_BRR)
+To generate a proper baud-rate you have to configure this register. The Proper value should be set for DIV_Mantissa[11:0] and DIV_Fraction[3:0]. The value of the USART_BRR register is called **USARTDIV**. 
+
+You can find all the information related to how to calculate DIV_Mantissa[11:0] and DIV_Fraction[3:0] in the Section **30.3.4 Fractional baud rate generation (Page 978 of RM0090)**
