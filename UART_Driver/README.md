@@ -59,14 +59,14 @@ As shown in the above figure, 55 in binary form has 5 One's in it hence parity i
 
 <img src = "UART_Images/Figure_UART_Odd_Parity2.PNG" width="600" height="220" hspace="150" >
 
-### USART Functional Block Diagram
+## USART Functional Block Diagram
 **Refer : Figure 296. USART block diagram (Page 968 of RM0090)** 
 
 <img src = "UART_Images/Figure_UART_Functional_Block_Diagram.PNG" width="700" height="700" hspace="80">
 
 This hardware block can be used for both **synchronous** and **asynchronous** modes. The 4 important pins which are used in UART communication are TX, RX, RTS, and CTS. If this hardware block is used in synchronous mode then serial clock **CK** is used. The UART is full-duplex hence we can transmit and receive simultaneously.  For TX and RX functionality there are two data registers- **TDR Transmit data register)** and **RDR(receive data register)**. Each data register has its associated shift register. A couple of Control registers used to control the TX and RX block. At the bottom section of the figure, we can see the baud-rate generator. USART_BRR register must be configured with correct DIV_Mantissa and DIV_Fraction to produce the desired baud rate.
 
-#### UART Peripheral Clock
+### UART Peripheral Clock
 Referring [STM32F407VGT Block Diagram](https://github.com/SharathN25/STM32F407-Discovery#overview-of-stm32f407vgt6-microcontroller),
 we can see that **USART1** and **USART6** are connected to **APB2(Max 84Mhz)** Bus, ideally these two peripheral should be able to run at 84Mhz, but when the microcontroller is powered by internally RC oscillator of 16Mhz, maximum peripheral clock that the USART hardware get is 16Mhz as shown below.
 
@@ -105,7 +105,7 @@ The heart of the Receiver is the **Receive shift register**, where the serial da
 6. Once the receiver block is enabled it starts searching for a start bit. When a character is received wait until the RXNE flag is set, then read the RDR.
 7. RXNE flag must be cleared by reading the data register, before the end of reception of the next character to avoid an overrun error.
 
-### USART Interrupts
+## USART Interrupts
 **Refer to Figure 320. USART interrupt mapping diagram (page 1006 of RM0090)**
 
 <img src = "UART_Images/Figure_UART_Interrupt_Map.PNG" >
@@ -114,10 +114,10 @@ From the figure, we can see that only one line is going to NVIC of the processor
 
 <img src = "UART_Images/Figure_UART_Interrupt_Request.PNG" width="700" height="350" hspace="100">
 
-### USART Registers
+## USART Registers
 **Refer: Section 30.6 USART Registers (Page 1007 of RM0090)**.
 
-#### 1. Control register 1 (USART_CR1)
+### 1. Control register 1 (USART_CR1)
 * **TE(Transmitter enable)** and **RE(Receiver enable)** field are used to enable TX block and RX block respectively.
 * **IDLEIE** - IDLE interrupt enable, **RXNEIE** - RXNE interrupt enable, **TCIE** - Transmission complete interrupt enable and **TXEIE** - TXE interrupt enable.
 * **PEIE(PE interrupt enable)** - During transmission, if parity error occurs and parity flag is set, in this case, if PEIE is enabled then parity interrupt occurs.
@@ -125,14 +125,14 @@ From the figure, we can see that only one line is going to NVIC of the processor
 * **M**: Word length, **UE**: USART enable
 * **OVER8**: Oversampling mode - oversampling is used by the receiver engine to sample RX.
 
-#### 2. Control register 2 (USART_CR2)
+### 2. Control register 2 (USART_CR2)
 This register is used to control the synchronous mode of USART communication.
 
-#### 3. Control register 3 (USART_CR3)   
+### 3. Control register 3 (USART_CR3)   
 Used to configure **CTS** and **RTS** and error interrupts. It is also used to set peripheral DMA. The bit **EIE(Error interrupt enable)** - used to enable error interrupts such as frame error, 
 noise error, overrun error, etc.
 
-#### 4. Data register (USART_DR)
+### 4. Data register (USART_DR)
 As the USART is a full duplex, there are two data registers. The **TDR **provides a parallel interface between the **internal bus** and **output shift register**, **RDR** provides a parallel interface between the **internal bus** and **input shift register**. TDR and RDR are not directly accessible by software, but they are accessible by  **Data register (USART_DR)**.
 
 **Behind the Scene working of Data Register**
@@ -141,7 +141,7 @@ As the USART is a full duplex, there are two data registers. The **TDR **provide
 
 You can think of **USART_DR** as a window to peek into the **TDR**and **RDR**. The above figure shows how data register works.  A write to a Data register always loads the data into the TDR register and a read from the Data Register always returns the value of the RDR register.
 
-#### 5. Status register (USART_SR)
+### 5. Status register (USART_SR)
 As you know status register is used to hold the various flags during the data communication. The UART peripheral has only one status register in which only 9-bits are used and rest are reserved. 
 * **PE(Parity Error)**- This bit is set when a parity error occurs in receiver mode. This bit also triggers interrupts if PEIE is enabled in CR1.
 * **FE:(Framing Error)** - This bit is set by hardware when a de-synchronization, excessive noise or a break character is detected.     
@@ -153,7 +153,7 @@ USART_DR register. So Firmware has to wait until this bit is set to read the DR.
 * **TC(Transmission complete)** - firmware has to wait until TC =1 to disable UART after the transmission is completed. 
 * **TXE(Transmit data register empty)**- Set when TDR is empty. It is cleared by a write to the USART_DR register.
 
-#### 6. Baud rate register (USART_BRR)
+### 6. Baud rate register (USART_BRR)
 To generate a proper baud-rate you have to configure this register. The Proper value should be set for DIV_Mantissa[11:0] and DIV_Fraction[3:0]. The value of the USART_BRR register is called **USARTDIV**. 
 
 You can find all the information related to how to calculate DIV_Mantissa[11:0] and DIV_Fraction[3:0] in the Section **30.3.4 Fractional baud rate generation (Page 978 of RM0090)**
