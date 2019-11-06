@@ -157,3 +157,9 @@ USART_DR register. So Firmware has to wait until this bit is set to read the DR.
 To generate a proper baud-rate you have to configure this register. The Proper value should be set for DIV_Mantissa[11:0] and DIV_Fraction[3:0]. The value of the USART_BRR register is called **USARTDIV**. 
 
 You can find all the information related to how to calculate DIV_Mantissa[11:0] and DIV_Fraction[3:0] in the Section **30.3.4 Fractional baud rate generation (Page 978 of RM0090)**
+
+## UART Driver Development 
+### Overview of the UART driver
+<img src = "UART_Images/Figure_UART_Overview.PNG" width="580" height="350" hspace="150">
+
+
