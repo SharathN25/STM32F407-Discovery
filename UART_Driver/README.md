@@ -162,4 +162,23 @@ You can find all the information related to how to calculate DIV_Mantissa[11:0] 
 ### Overview of the UART driver
 <img src = "UART_Images/Figure_UART_Overview.PNG" width="580" height="350" hspace="150">
 
+The above figure gives an abstract idea about UART driver development. The sample applications will use the **UART driver** along with the MCU specific **startup code** to interact with the UART Peripheral. The same approach can be used as a template to develop the driver for any STM32F4xx series MCU with slight modification.
 
+### UART Driver API requirements
+<img src = "UART_Images/Figure_UART_API_Requirements.PNG" width="580" height="250" hspace="150">
+
+The UART driver code will provide the above APIs. That is the API for UART initialization which includes configuring sampling rate, data width, start and stop bits, etc. The Driver code will also provide APIs for Data Transmission, Data Reception and UART Interrupt handling.
+
+### UART Pin Packs
+<img src = "UART_Images/Figure_UART_PinPack.PNG"  width="600" height="300" hspace="150" >
+
+The STM32F407VG MCU supports 4 USARTs and 2 UARTs. The USART1 and USART2 are connected to the APB2 bus. The USART2, USART3, UART4, and UART5 are connected to the APB1 bus. You can bring out the TX and RX pins of USART and UART peripherals on different GPIO pin packs as shown in that above table.
+
+### UART Driver Code/Files
+The two main files for the SPI driver are ***hal_uart_driver.h***and ***hal_uart_driver.c***. The header file(**.h** file) contains 3 main sections:
+
+1. UART Register bit definitions and macros
+2. Data structure used for UART
+3. Declaration of all Driver Exposed APIs.
+
+The source file (**.c** file) provides the function definition of all the APIs.
