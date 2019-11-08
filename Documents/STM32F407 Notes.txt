@@ -788,4 +788,22 @@ UART Interrupt handling driver code - Refer notes diagram.
 
 
 
-      ->static void hal_uart_handle_TXE_interrupt(uart_handle_t *huart) =  Refer notes diagram for flow chart.  		 
+      ->static void hal_uart_handle_TXE_interrupt(uart_handle_t *huart) =  Refer notes diagram for flow chart.  
+
+
+
+
+_____________________________________________________________________________________________
+*************************************I2C****************************************************
+
+## Inter-Integrated Circuit (I2C)
+
+The I2C, pronounced as a "I squared" or "I two C" is a two wire serial bus protocol developed by Philips Semiconductor in 1982. Currently I2C is widlely used in interconnection of single chip Microcontroller, Memory chips, ADC, DAC, Pressure/Temperature sensors as well as other low speed peripherals. The I2C protocol requires 2 lines for data communication, they are **SDA(Serial Data Line) and SCA(Serial Clock Line). Each slave is identified with 7-bit/10-bit address, the master must know these addresses in order to communicate with slave. Another interesting fact about I2C is that slave at any time become master and master can become slave (if they incorporate the necessary hardware). The I2C is half duplex and can transfer data upto 2 to 3Mhz.
+
+### I2C Hardware Setup
+<img I2C hardware>
+Above figure shows the hardware setup of the I2C. Here both the pin **SDA** and **SCA** are in open drain configuration. But the open drain configuration is useless unlesss we provide pull-up/pull-down resistor (To know more Click **[Here](https://github.com/SharathN25/STM32F407-Discovery/tree/master/GPIO_Driver#gpio-output-mode-with-open-drain-configuration)**). In this case it is pulled up using **pull-up resistor**, whose value may range between 4 to 10K Ohm. There is a formula to calculate these resistro value based on factors like speed , etc. However programmar can activate the internal pull-up transistor of IO pin instead or using the external transistor.
+
+
+
+		 
