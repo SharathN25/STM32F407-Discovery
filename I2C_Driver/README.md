@@ -39,3 +39,13 @@ it is interpreted as **NACK**.
 <img src = "I2C_Images/Figure_I2C_Stop.PNG" width="220" height="140" hspace="300">
 
 When the Clock is ***HIGH***, if the **SDA** makes ***LOW to HIGH*** transition, then it is interpreted as **STOP** Condition.
+
+##   I2C Clock Stretching
+* Clock stretching is one of the most powerful features of I2C protocol which is used to slow down the communication. Clock Stretching simply means that holding the clock to ***Low*** Level (Ground Level).
+* The Moment the clock is held low, the entire I2C interface pauses until the clock is given back to normal condition.
+* In I2C Master determines the clock speed. There are situations where I2C-Slave is unable to cooperate with clock speed given by the master and needs to slow down. In such cases, the slave takes the advantage of **Clock Stretching** to slow down by pulling the clock to ***Low*** level.
+
+<img src = "I2C_Images/Figure_I2C_Clock_Stretching.PNG" width ="600" height="300" hspace="150">
+
+ * Referring to the above figure, at the 8th Clock-Cycle it stretches the clock as it is busy. And at the 9th clock, it sends ACK. If Clock stretching is not enabled then the Master would have interpreted the High(NACK) at the 9th clock Cycle(i.e immediately after the 8th clock cycle).
+* I2C hardware automatically does clock stretching, the programmer just needs to enable this feature.
