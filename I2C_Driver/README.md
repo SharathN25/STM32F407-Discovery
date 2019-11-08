@@ -18,8 +18,24 @@ In this case, it is pulled up using **pull-up resistor**, whose value may range 
 with the address sent out by the master. 
 * After Receiving the ACK, the master will send the data byte and for each byte slave receives, the slave will send back ACK.
 * After this at any point if the master wants to stop communication it will raise the **STOP** condition, where the bus will be released.
+### START Condition
+<img src = "I2C_Images/Figure_I2C_Start.PNG" width="260" height="130" hspace="300">
+
+If teh **SDA** line goes ***LOW*** when the Clock is ***HIGH*** then it is interpreted as **START Condition**.
 
 ### Address Phase
 <img src = "I2C_Images/Figure_I2C_Address_Phase.PNG" width="500" height="250" hspace="150" >
 
 Afte the **START** bit, the **Address Phase** comes as discussed before.  During the address phase the **SDA** will make the transition when the clock is low.  After 7 Clock-Cycle the address is sent and at 8th Clock-Cycle master sends out R/W bit. At the 8th Clock-Cycle if SDA is high then the master wants to read and if SDA  is low then the master wants to write. This is how the address phase works in accordance with the clock.
+
+### ACK and NACK
+<img src = "I2C_Images/Figure_I2C_ACKNACK.PNG"  >
+
+When the master sends a 7-Bit address, if it matches the slave address then the slave will pull the SDA to low at 9th Clock-Cycle.
+If **SDA** is ***LOW*** at the 9th Clock-Cycle then it is interpreted as **ACK**. If **SDA** is ***HIGH*** at the 9th Clock-Cycle then
+it is interpreted as **NACK**.
+
+### STOP Condition
+<img src = "I2C_Images/Figure_I2C_Stop.PNG" width="220" height="140" hspace="300">
+
+When the Clock is ***HIGH***, if the **SDA** makes ***LOW to HIGH*** transition, then it is interpreted as **STOP** Condition.
