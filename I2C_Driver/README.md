@@ -49,3 +49,10 @@ When the Clock is ***HIGH***, if the **SDA** makes ***LOW to HIGH*** transition,
 
  * Referring to the above figure, at the 8th Clock-Cycle it stretches the clock as it is busy. And at the 9th clock, it sends ACK. If Clock stretching is not enabled then the Master would have interpreted the High(NACK) at the 9th clock Cycle(i.e immediately after the 8th clock cycle).
 * I2C hardware automatically does clock stretching, the programmer just needs to enable this feature.
+
+## I2C Operating Modes
+### 1. Fast Mode
+The Fast Mode is an operating mode in I2C protocol in which the device can transmit and receive data up to **400Kbps**. The Fast Mode devices are **downward-compatible** and hence it can
+communicate with **Standard Mode** devices in **0 to 100Kbps** speed I2C bus system. The STM32F407 MCU supports only Fast mode and standard mode. Some devices support Fast Mode+.
+### 2. Standard Mode
+In standard mode, the data transfer can reach speed up to **100Kbps**. The standard mode devices are not upward-compatible.
