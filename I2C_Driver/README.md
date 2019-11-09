@@ -56,3 +56,16 @@ The Fast Mode is an operating mode in I2C protocol in which the device can trans
 communicate with **Standard Mode** devices in **0 to 100Kbps** speed I2C bus system. The STM32F407 MCU supports only Fast mode and standard mode. Some devices support Fast Mode+.
 ### 2. Standard Mode
 In standard mode, the data transfer can reach speed up to **100Kbps**. The standard mode devices are not upward-compatible.
+
+## I2C Duty Cycle
+Most of the modern MCUs will allow varying the duty cycle of the I2C Clock. The Duty Cycle is significant and different I2C modes have a slightly different duty cycle.
+
+**Refer: Page 48 of UM10204 I2C-bus specification and user manual**
+
+<img src ="I2C_Images/Figure_I2C_Duty_Cycle_Table.PNG">
+
+From the I2C specification we can see that for **Standard Mode** minimum values are ***tLOW = 4.7us** and ***tHIGH = 4.0us***. So to achieve 100KHz in standard mode we can keep ***tLOW = tHIGH = 5us*** (Which will pass the I2C specification). And for the **Fast Mode** minimum values are ***tLOW = 1.3us** and ***tHIGH = 0.6us***.
+
+<img src ="I2C_Images/Figure_I2C_Duty_Cycle_STM.png" width="700" height="300" hspace="100">
+
+In STM32F4xx MCUs there is two option for Fast Mode, one is FM(1:2) and FM(16:9) as shown above. 
