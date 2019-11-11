@@ -69,3 +69,33 @@ From the I2C specification we can see that for **Standard Mode** minimum values 
 <img src ="I2C_Images/Figure_I2C_Duty_Cycle_STM.png" width="700" height="300" hspace="100">
 
 In STM32F4xx MCUs there is two option for Fast Mode, one is FM(1:2) and FM(16:9) as shown above. 
+
+## I2C Addressing Modes
+There are two Addressing Modes in I2C :
+
+1. 7-Bit Addressing Mode
+2. 10-Bit Addressing Mode
+
+Nowadays almost all the MCUs support both the addressing modes.
+
+### 7-Bit Addressing Mode
+<img src = "I2C_Images/Figure_I2C_7bit.PNG" width="800" height="150" hspace="40">
+
+Here each slave is identified with **7-bit address**. As shown above, the  7-bit slave address when combined with **r/w bit *
+becomes an **8-bit write address** or **8-bit read address**.
+
+### 10-Bit Addressing Mode
+<img src = "I2C_Images/Figure_I2C_10bit.PNG" width="750" height="180" hspace="70">
+
+* To prevent the address clashes of the limited range of 7-bit address a new scheme of 10-bit addressing is used. 
+* After the start bit, a leading **11110** pattern introduces a 10-bit addressing scheme.
+* When the slave detects this bit pattern it understands that the master is using 10-bit addressing mode, and hence 7-bit address should not be included in this bit pattern. Ths slaves who use 7-bit addressing mode will ignore this phase.
+* As shown in the above figure, the first byte contains the last two bits of the 10-bit address(i.e A9 and A8)
+* The Second byte contains the remaining 8-bits of 10bit-address.
+
+## I2C Functional Block Diagram
+<img src = "I2C_Images/Figure_I2C_FunctionalBlock.PNG" width="550" height="600" hspace="150">
+
+From the above figure,  we can see that 3 pins that are coming out are **SDA**, **SCL** and **SMBA**. The SMBA is used in SMB(System management bus) Protocol, which is almost identical to the I2C bus. Initially, Philips developed I2C, years later Intel came up with SMB which is an extension of I2C. From the functional block we can see there is one **Shift Register** and one associated **Data Register**(In case of SPI there were two buffer TX and Rx since SPI was full-duplex). Since I2C  is half-duplex one data register is sufficient. Also, there are **Address Registers** along with **Comparator**. Address comparison is done in the comparator during the address phase. There are two **Control Registers(CR1 and CR2)** and two **Status Registers(SR1&SR2)**. There is a **Clock Control Register(CCR)**,  which controls the serial clock coming out of the Pin SCL.
+                                                                                        
+
