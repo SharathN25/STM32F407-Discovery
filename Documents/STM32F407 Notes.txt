@@ -466,7 +466,7 @@ Ref  : The block diagram of the SPI is shown in Figure 246. (Page 876 0f RM0090)
 			 ->From APB1 bus clock is given to multiplexer which is handled by "control bits" of Control  register.
 			 ->The minimum value of these control bus is "2". 0 and 1 is not allowed in this case - thats the design.
 			 ->So the minimum peripheral frequency(fpclk) which can be supplied is 2Mhz and Maximum is 42Mhz.
-			 -> By using this fplck, the I2C clock circuitry generate I2C serial block.
+			 ->By using this fplck, the I2C clock circuitry generate I2C serial Clock.
              ->This MCU can produce up to 400Khz if its in Fast Mode and 100Khz in standard mode.
 			 
      NOTE : 1)fpclk(Peripheral clock frequency) must be at least 2Mhz in order to achieve standard mode i2c frequencies that are upto 100Khz.
