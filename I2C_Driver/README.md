@@ -132,3 +132,44 @@ Table 123,describes Various I2C Events and Errors.
 * **PEC error**: Happens when there is CRC mismatch if the CRC feature is enabled. 
 * **Time out error**: Happens when master/slave stretches the clock by holding it low more than the recommended amount of time.
 
+### I2C IRQ numbers
+Referring to the **[Vector Table](https://github.com/SharathN25/STM32F407-Discovery#vector-table)** of the MCU, the I2C IRQ numbers are as fallows: 
+
+* **I2C1_EV**(Event interrupt)--> Connected to **31st** line of NVIC.             
+* **I2C1_ER**(Error interrupt)--> Connected to **32nd** line of NVIC.    
+* **I2C2_EV**(Event interrupt)--> Connected to **33rd** line of NVIC.
+* **I2C2_ER**(Error interrupt)--> Connected to **34th** line of NVIC.         
+* **I2C3_ER**(Event interrupt)--> Connected to **72nd** line of NVIC.                 
+* **I2C3_ER**(Error interrupt)--> Connected to **73rd** line of NVIC.
+
+## I2C Registers
+**Refer Section 27.6 I2C registers (Page 860 of RM0090)**
+### 1. I2C Control register 1 (I2C_CR1)
+* **PE(0th bit)** - Enables(1) the I2C peripheral. It is always recommended to make this bit 1 after all other initialization is done.
+* **NOSTRETCH(7th bit)**  - this field is 0 by default, which means "Clock stretching" is enabled by default. This bit is used to disable clock stretching in slave mode when ADDR or BTF flag is set, until it is reset by software. If the 7th bit is **0 the Clock stretching enabled** and if its **1 then Clock stretching disabled**.
+* **START(8th bit)** - When master makes this bit 1, start condition is generated. If you set this bit to 1 being in SLAVE mode, the device will automatically become master generating start condition. So the slave becomes master. (if the device is in slave mode and wants to master then it has to set this bit 1).
+* **STOP(9th bit)** - Used to generate STOP condition.  
+* **ACK(10th Bit)** - Used to enable the hardware ACK feature of I2C peripheral. As ACK plays a very important role it is necessary to make this bit set to 1 which sends ACK for every byte transferred. If this bit is not set, NACK will be sent for the reception of bytes(applicable to both slave&master).
+* **PEC(12th Bit)** - for packet error checking. **SWRST(15th bit)** - used to reset peripheral when an error occurs.
+
+### 2. I2C Control register 2 (I2C_CR2)
+* **Bits 5:0 FREQ[5:0]**:  Used to Select Peripheral clock frequency, The peripheral intrinsic maximum limit is 50Mhz.
+  * 0b000000: Not allowed
+  * 0b000001: Not allowed
+  * 0b000010: 2 MHz
+  * ...
+  * ...
+  * ...
+  * 0b110010: 50 MHz
+  * Higher than 0b100100: Not allowed
+  
+* **ITBUFEN**: Buffer interrupt enable, **ITEVTEN**: Event interrupt enable and **TERREN**: Error interrupt enable. Unless we make the above bits to 1, you won't get  I2C event/error/buffer interrupts.
+
+### 3. I2C Address Registers
+There are two I2C address registers to set the device address. That means every slave device can have 2 different addresses. 
+#### I2C Own address register 1 (I2C_OAR1)
+By using this register, you can mention both 7&10 bit addresses. If 7bit addressing is used then it should store in ADD[7:1]properly, in this case, ADD0(bit-0) is don't care and ADDMODE(bit-15) should be made 0 in 7bit addressing mode and it is made 1 for 10bit addressing.
+
+#### I2C Own address register 2 (I2C_OAR2)
+This register is used to set another address for the slave. It supports only 7-bit addressing mode.
+
