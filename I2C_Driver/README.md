@@ -97,5 +97,38 @@ becomes an **8-bit write address** or **8-bit read address**.
 <img src = "I2C_Images/Figure_I2C_FunctionalBlock.PNG" width="550" height="600" hspace="150">
 
 From the above figure,  we can see that 3 pins that are coming out are **SDA**, **SCL** and **SMBA**. The SMBA is used in SMB(System management bus) Protocol, which is almost identical to the I2C bus. Initially, Philips developed I2C, years later Intel came up with SMB which is an extension of I2C. From the functional block we can see there is one **Shift Register** and one associated **Data Register**(In case of SPI there were two buffer TX and Rx since SPI was full-duplex). Since I2C  is half-duplex one data register is sufficient. Also, there are **Address Registers** along with **Comparator**. Address comparison is done in the comparator during the address phase. There are two **Control Registers(CR1 and CR2)** and two **Status Registers(SR1&SR2)**. There is a **Clock Control Register(CCR)**,  which controls the serial clock coming out of the Pin SCL.
-                                                                                        
+
+### I2C Peripheral Clock and Serial line Clock
+<img src = "I2C_Images/Figure_I2C_Peripheral_Clock.png" width="700" hight="350" hspace="100">
+
+STM32F407 MCU has three I2C Peripherals, all three I2C peripherals are connected to APB1(Max 42Mhz) System Bus. Referring to the above figure, the APB1 bus clock is given to multiplexer which is handled by the **control bits** of the Control register. The minimum value of these control bus is **2**, 0 and 1 is not allowed in this case, this is the design of STM.  So the minimum **Peripheral Clock Frequency(fpclk)** which can be supplied is **2Mhz** and Maximum is **42Mhz**. By using this **fplck**, the I2C clock circuitry generates I2C serial  Clock. This MCU can produce up to **400Khz** if it is in **Fast Mode** and **100Khz** in the **standard Mode**.
+
+**Note:**
+1. The **fpclk(Peripheral clock frequency)** must be at least **2Mhz** to achieve Standard mode I2C frequencies that are up to **100Khz**.
+2. The **fpclk** must be at least **4Mhz** to achieve Fast Mode I2C frequencies that are above **100Khz** and below **400Khz**. 
+3. The **fpclk**  must be in multiples of **10Mhz** to reach max **400khz** in FM I2C frequency.
+
+## I2C IRQs and Interrupt Mapping
+The below figure shows how I2C interrupts are delivered to the processor. The I2C peripheral produces two interrupts lines one for **I2C Events** and another is for **I2C Errors**.
+
+<img src = "I2C_Images/Figure_I2C_Interrupt_Overview.PNG" width="600" hight="450" hspace="150">
+
+**Refer Section 27.4 I2C interrupts(Page 858 of RM0090)**
+
+<img src = "I2C_Images/Figure_I2C_interrupt_mapping.PNG" width="600" height="400" hspace = "150" >
+
+From the above figure 245, we can see that I2C peripheral is capable of producing two interrupt lines , **it_event** and **it_error**, these two lines goes to the **NVIC** block of  the processor. Unlike SPI, I2C has seperate line interrupting processor for errors.
+
+<img src = "I2C_Images/Figure_I2C_Interrupt_Table.PNG" width="500" height="350" hspace="200">
+
+Table 123,describes Various I2C Events and Errors.
+
+### I2C Specific Errors
+* **Bus Error**: This error happens when interface detects an SDA rising or falling edge while SCL is high, occurring in a nonvalid position during the byte transfer.
+* **Arbitration Loss Error**: This error happens when the interface loses the arbitration of the bus to another master.
+* **ACK failure error**: happens when no ACK is returned for the byte sent.
+* **Overrun Error**: Happens during the reception, when a new byte is received and data register has not been read yet and a new byte is lost. Whenever this error happens, surely, at least one byte is lost.
+* **Under-run error**: This happens in TX when a new byte has to be sent and the data register has not been written yet and the same byte is sent twice. Clock stretching can be used to prevent Overrun and Under-run error. 
+* **PEC error**: Happens when there is CRC mismatch if the CRC feature is enabled. 
+* **Time out error**: Happens when master/slave stretches the clock by holding it low more than the recommended amount of time.
 
