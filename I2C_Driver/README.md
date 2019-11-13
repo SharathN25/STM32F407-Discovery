@@ -229,7 +229,7 @@ The first 12 bits i.e CCR[11:0] are used to program the CCR. The CCR is value is
 5. But before clearing the ADDR bit, you have to disable ACK because after the 1st-byte reception master should send NACK to slave but not the ACK. Then configure STOP bit to generate stop condition(It won't generate STOP condition immediately since I2C is in wait state), Now clear the ADDR flag.
 6. Once ADDR bit is cleared, I2C comes immediately out of the wait state and gets 1byte in the shift register. Since ACK is disabled already, NACK is sent to slave and data byte will be transferred to DR which triggers RXNE interrupt followed by a STOP condition. In RXNE interrupt you can read the byte sent
 
-### Case 2: Receiving 2 bytes from slave
+#### Case 2: Receiving 2 bytes from slave
 1. When ADDR flag =1, Clock is stretched and I2C is in a wait state.
 2. Now we disable ACK(ACK=0) and set The POS=1. **POS: Acknowledge/PEC Position (for data reception)**
    * POS =0: In this case, ACK(Bit 10) controls the Acknowledge/Not-Acknowledge of current byte received in the shift register.
@@ -239,3 +239,20 @@ The first 12 bits i.e CCR[11:0] are used to program the CCR. The CCR is value is
 5. Content of Master SR will be moved to the DR and RxNE flag goes high indicating DR is not Empty.  Since ACK is sent to slave for Data1 reception, slave assumes that the master wants the next byte so it sends Data2. Since we made ACK=0 and POS=1, NACK will be sent to the slave.
 6. Now in masters I2C engine both SR and DR are full, BTF flag is set and the clock is stretched to make the I2C wait state. So now all firmware has to do in BTF handler code is to read data1 and data2.
 7. What exactly firmware does in the BTF handler is - first generate stop condition the read data register twice.
+
+#### Case 3: Receiving more than 2 bytes (N>2) from slave.
+1. Lets assume that there is a need to receive 100 bytes from the slave, N=100th byte, N-1=99th byte, and N-2=98th byte.
+2. From 1st byte to 97th byte(i.e N-3 )  carry out the reception in a normal way, that is waiting for RxNE=1 then read from DR.
+3. Once you reach till N-2 byte, follow below steps:-
+   * First wait until BTF=1,(that is N-2 is in DR and N-1 is in SR and also both SR=DR=full). So the clock is stretched to low.
+   * In BTF handler, first, disable ACK then read the data register.
+   * Now N-1 is in DR and Nth Byte is in SR. Now again BTF=1.
+   * Now in BTF handler configure stop condition then read the last two bytes.
+
+### 3. Slave Transmitting Data
+1. Master sends the address along with r/w = 1 if the address matches the slave sends ACK.
+2. Now ADDR=1, since slave address is matched. and when ADDR is cleared slave fall into Tx mode.
+3. Initially both DR and SR are empty so TxE goes high until slave writes any data into DR.
+4. After this for every TxE interrupt slave sends one data byte and the master sends ACK.
+5. When a master no longer wants any data from slave it sends out NACK.
+6. When NACK is received it causes the ACK-failure interrupt in slave,  where slave assumes that it is an indication from master to end communication. Then the master will generate stop condition which makes stop flag to be set in slave.
