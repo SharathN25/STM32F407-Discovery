@@ -173,3 +173,29 @@ By using this register, you can mention both 7&10 bit addresses. If 7bit address
 #### I2C Own address register 2 (I2C_OAR2)
 This register is used to set another address for the slave. It supports only 7-bit addressing mode.
 
+### 4. I2C Data Register
+The data register is used to transmit and receive data-byte over any serial protocol. In I2C there is only 8-bit data frame unlike 
+SPI. Hence bit-8 to bit-15 are reserved fro this register.
+
+* **Transmitter mode**: Byte transmission starts automatically when a byte is written in the DR register. A continuous transmit stream can be maintained if the next data to be transmitted is put in DR once the transmission is started (TxE=1). That is TxE=1 
+is an indication to put the next data byte in DR.
+                      
+* **Receiver mode**: Received byte is copied into DR (RxNE=1). A continuous transmit stream can be maintained if DR is read before the next data byte is received (RxNE=1). So whenever RxNE interrupt is received it is clear that there is a data received 
+which has to be read.
+
+### 5. I2C Status register 1 (I2C_SR1)
+* **SB(Bit 0): Start Bit** - valid only for master, if master successfully generates start condition, then this bit is set 1 by hardware.    
+* **ADDR(bit 1):Address sent (master mode)/matched (slave mode)** - For Master, if ADDR =1, then address phase is completed. For slaves, if ADDR =1, the slave address is successfully matched. SB & ADDR are set by hardware but should be cleared by firmware.
+* **BTF(Bit 2): Byte transfer finished** - This is a very important flag which makes sense only when clock stretching is enabled. 
+  * During TX of data, if TXE =1 and shift register is also empty(that is both data and shift register are empty) then BTF=1, and I2C clock is stretched to low to prevent under-run.
+  * During RX of data, if RXNE =1 and shift register is also full(that is both data and shift register are full) then BTF=1, and I2C clock is stretched to low to prevent overrun.
+  * So for master/slave if BTF =1, then it's clear that i2c communication is momentarily paused until BTF is cleared by writing to/ reading from the data register.
+                      
+* **STOPF(Bit 4): Stop detection(slave mode)** - if this bit is 1 that means that slave has detected stop condition raised by the master. this is set by
+  hardware and should be cleared by software.
+                     
+* **RxNE(Bit 6): Data register not empty (receivers)** - if this flag=1, then it means shift register has received new data byte and stored in the data register. So new data is waiting to be read from in the data register. This flag is not set during address phase This flag must be used during the reception, 
+firmware has to poll for this or raise interrupt when this flag is set to read data from DR. RxNE flag will be automatically cleared when DR is read.
+                    
+* **TxE(Bit 7): Data register empty (transmitters)** - Use of this flag is a must during the data transmission. If TxE=1, then it means data register is empty and it is the right time to put data int DR for transmission. This flag is not set during the address phase. a write into DR automatically clears the TxE flag.
+
