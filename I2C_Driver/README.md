@@ -97,5 +97,163 @@ becomes an **8-bit write address** or **8-bit read address**.
 <img src = "I2C_Images/Figure_I2C_FunctionalBlock.PNG" width="550" height="600" hspace="150">
 
 From the above figure,  we can see that 3 pins that are coming out are **SDA**, **SCL** and **SMBA**. The SMBA is used in SMB(System management bus) Protocol, which is almost identical to the I2C bus. Initially, Philips developed I2C, years later Intel came up with SMB which is an extension of I2C. From the functional block we can see there is one **Shift Register** and one associated **Data Register**(In case of SPI there were two buffer TX and Rx since SPI was full-duplex). Since I2C  is half-duplex one data register is sufficient. Also, there are **Address Registers** along with **Comparator**. Address comparison is done in the comparator during the address phase. There are two **Control Registers(CR1 and CR2)** and two **Status Registers(SR1&SR2)**. There is a **Clock Control Register(CCR)**,  which controls the serial clock coming out of the Pin SCL.
-                                                                                        
+
+### I2C Peripheral Clock and Serial line Clock
+<img src = "I2C_Images/Figure_I2C_Peripheral_Clock.png" width="700" hight="350" hspace="100">
+
+STM32F407 MCU has three I2C Peripherals, all three I2C peripherals are connected to APB1(Max 42Mhz) System Bus. Referring to the above figure, the APB1 bus clock is given to multiplexer which is handled by the **control bits** of the Control register. The minimum value of these control bus is **2**, 0 and 1 is not allowed in this case, this is the design of STM.  So the minimum **Peripheral Clock Frequency(fpclk)** which can be supplied is **2Mhz** and Maximum is **42Mhz**. By using this **fplck**, the I2C clock circuitry generates I2C serial  Clock. This MCU can produce up to **400Khz** if it is in **Fast Mode** and **100Khz** in the **standard Mode**.
+
+**Note:**
+1. The **fpclk(Peripheral clock frequency)** must be at least **2Mhz** to achieve Standard mode I2C frequencies that are up to **100Khz**.
+2. The **fpclk** must be at least **4Mhz** to achieve Fast Mode I2C frequencies that are above **100Khz** and below **400Khz**. 
+3. The **fpclk**  must be in multiples of **10Mhz** to reach max **400khz** in FM I2C frequency.
+
+## I2C IRQs and Interrupt Mapping
+The below figure shows how I2C interrupts are delivered to the processor. The I2C peripheral produces two interrupts lines one for **I2C Events** and another is for **I2C Errors**.
+
+<img src = "I2C_Images/Figure_I2C_Interrupt_Overview.PNG" width="600" hight="450" hspace="150">
+
+**Refer Section 27.4 I2C interrupts(Page 858 of RM0090)**
+
+<img src = "I2C_Images/Figure_I2C_interrupt_mapping.PNG" width="600" height="400" hspace = "150" >
+
+From the above figure 245, we can see that I2C peripheral is capable of producing two interrupt lines , **it_event** and **it_error**, these two lines goes to the **NVIC** block of  the processor. Unlike SPI, I2C has seperate line interrupting processor for errors.
+
+<img src = "I2C_Images/Figure_I2C_Interrupt_Table.PNG" width="500" height="350" hspace="200">
+
+Table 123,describes Various I2C Events and Errors.
+
+### I2C Specific Errors
+* **Bus Error**: This error happens when interface detects an SDA rising or falling edge while SCL is high, occurring in a nonvalid position during the byte transfer.
+* **Arbitration Loss Error**: This error happens when the interface loses the arbitration of the bus to another master.
+* **ACK failure error**: happens when no ACK is returned for the byte sent.
+* **Overrun Error**: Happens during the reception, when a new byte is received and data register has not been read yet and a new byte is lost. Whenever this error happens, surely, at least one byte is lost.
+* **Under-run error**: This happens in TX when a new byte has to be sent and the data register has not been written yet and the same byte is sent twice. Clock stretching can be used to prevent Overrun and Under-run error. 
+* **PEC error**: Happens when there is CRC mismatch if the CRC feature is enabled. 
+* **Time out error**: Happens when master/slave stretches the clock by holding it low more than the recommended amount of time.
+
+### I2C IRQ numbers
+Referring to the **[Vector Table](https://github.com/SharathN25/STM32F407-Discovery#vector-table)** of the MCU, the I2C IRQ numbers are as fallows: 
+
+* **I2C1_EV**(Event interrupt)--> Connected to **31st** line of NVIC.             
+* **I2C1_ER**(Error interrupt)--> Connected to **32nd** line of NVIC.    
+* **I2C2_EV**(Event interrupt)--> Connected to **33rd** line of NVIC.
+* **I2C2_ER**(Error interrupt)--> Connected to **34th** line of NVIC.         
+* **I2C3_ER**(Event interrupt)--> Connected to **72nd** line of NVIC.                 
+* **I2C3_ER**(Error interrupt)--> Connected to **73rd** line of NVIC.
+
+## I2C Registers
+**Refer Section 27.6 I2C registers (Page 860 of RM0090)**
+### 1. I2C Control register 1 (I2C_CR1)
+* **PE(0th bit)** - Enables(1) the I2C peripheral. It is always recommended to make this bit 1 after all other initialization is done.
+* **NOSTRETCH(7th bit)**  - this field is 0 by default, which means "Clock stretching" is enabled by default. This bit is used to disable clock stretching in slave mode when ADDR or BTF flag is set, until it is reset by software. If the 7th bit is **0 the Clock stretching enabled** and if its **1 then Clock stretching disabled**.
+* **START(8th bit)** - When master makes this bit 1, start condition is generated. If you set this bit to 1 being in SLAVE mode, the device will automatically become master generating start condition. So the slave becomes master. (if the device is in slave mode and wants to master then it has to set this bit 1).
+* **STOP(9th bit)** - Used to generate STOP condition.  
+* **ACK(10th Bit)** - Used to enable the hardware ACK feature of I2C peripheral. As ACK plays a very important role it is necessary to make this bit set to 1 which sends ACK for every byte transferred. If this bit is not set, NACK will be sent for the reception of bytes(applicable to both slave&master).
+* **PEC(12th Bit)** - for packet error checking. **SWRST(15th bit)** - used to reset peripheral when an error occurs.
+
+### 2. I2C Control register 2 (I2C_CR2)
+* **Bits 5:0 FREQ[5:0]**:  Used to Select Peripheral clock frequency, The peripheral intrinsic maximum limit is 50Mhz.
+  * 0b000000: Not allowed
+  * 0b000001: Not allowed
+  * 0b000010: 2 MHz
+  * ...
+  * ...
+  * ...
+  * 0b110010: 50 MHz
+  * Higher than 0b100100: Not allowed
+  
+* **ITBUFEN**: Buffer interrupt enable, **ITEVTEN**: Event interrupt enable and **TERREN**: Error interrupt enable. Unless we make the above bits to 1, you won't get  I2C event/error/buffer interrupts.
+
+### 3. I2C Address Registers
+There are two I2C address registers to set the device address. That means every slave device can have 2 different addresses. 
+#### I2C Own address register 1 (I2C_OAR1)
+By using this register, you can mention both 7&10 bit addresses. If 7bit addressing is used then it should store in ADD[7:1]properly, in this case, ADD0(bit-0) is don't care and ADDMODE(bit-15) should be made 0 in 7bit addressing mode and it is made 1 for 10bit addressing.
+
+#### I2C Own address register 2 (I2C_OAR2)
+This register is used to set another address for the slave. It supports only 7-bit addressing mode.
+
+### 4. I2C Data Register
+The data register is used to transmit and receive data-byte over any serial protocol. In I2C there is only 8-bit data frame unlike 
+SPI. Hence bit-8 to bit-15 are reserved fro this register.
+
+* **Transmitter mode**: Byte transmission starts automatically when a byte is written in the DR register. A continuous transmit stream can be maintained if the next data to be transmitted is put in DR once the transmission is started (TxE=1). That is TxE=1 
+is an indication to put the next data byte in DR.
+                      
+* **Receiver mode**: Received byte is copied into DR (RxNE=1). A continuous transmit stream can be maintained if DR is read before the next data byte is received (RxNE=1). So whenever RxNE interrupt is received it is clear that there is a data received 
+which has to be read.
+
+### 5. I2C Status register 1 (I2C_SR1)
+* **SB(Bit 0): Start Bit** - valid only for master, if master successfully generates start condition, then this bit is set 1 by hardware.    
+* **ADDR(bit 1):Address sent (master mode)/matched (slave mode)** - For Master, if ADDR =1, then address phase is completed. For slaves, if ADDR =1, the slave address is successfully matched. SB & ADDR are set by hardware but should be cleared by firmware.
+* **BTF(Bit 2): Byte transfer finished** - This is a very important flag which makes sense only when clock stretching is enabled. 
+  * During TX of data, if TXE =1 and shift register is also empty(that is both data and shift register are empty) then BTF=1, and I2C clock is stretched to low to prevent under-run.
+  * During RX of data, if RXNE =1 and shift register is also full(that is both data and shift register are full) then BTF=1, and I2C clock is stretched to low to prevent overrun.
+  * So for master/slave if BTF =1, then it's clear that i2c communication is momentarily paused until BTF is cleared by writing to/ reading from the data register.
+                      
+* **STOPF(Bit 4): Stop detection(slave mode)** - if this bit is 1 that means that slave has detected stop condition raised by the master. this is set by
+  hardware and should be cleared by software.
+                     
+* **RxNE(Bit 6): Data register not empty (receivers)** - if this flag=1, then it means shift register has received new data byte and stored in the data register. So new data is waiting to be read from in the data register. This flag is not set during address phase This flag must be used during the reception, 
+firmware has to poll for this or raise interrupt when this flag is set to read data from DR. RxNE flag will be automatically cleared when DR is read.
+                    
+* **TxE(Bit 7): Data register empty (transmitters)** - Use of this flag is a must during the data transmission. If TxE=1, then it means data register is empty and it is the right time to put data int DR for transmission. This flag is not set during the address phase. a write into DR automatically clears the TxE flag.
+
+### 6. I2C Clock control register (I2C_CCR)
+The first 12 bits i.e CCR[11:0] are used to program the CCR. The CCR is value is calculated based on the given formula which is specific to STM. **Refer Section 27.6.8 I2C Clock control register (I2C_CCR) (Page 870 of RM0090)** for more details.
+
+## Steps to do Data Transmission and Recption in I2C
+### 1. Master Transmitting Data
+**Case**: Consider transmission of 3 bytes for simplicity
+
+1. The Master firmware generates START Condition.
+2. Firmware has to wait until SB=1, to confirm that the START condition is successfully generated.
+3. The master goes for the address phase where it writes addresses along with read/write bit=0.
+4. Master wait here until ADDR=1, which confirms the address phase is completed. ADDR flag is set only after ACK is received from slave for address sent.
+5. Master should clear above ADDR flag until the ADDR flag is not cleared I2C will be in a wait state by stretching clock to low.
+6. Once AADR is cleared, I2C comes up from the wait state and TxE will be Set. (Here DR and SR are empty). Here 1st byte is loaded into DR  which is then loaded into SR. and DR goes empty again. The count is decremented. (Initially, count =3) , now Count =2
+7. As DR goes empty again, TxE=1, here we write the 2nd Byte to DR. Count is decremented. now count =1.
+8. When shift register finished transmission of byte1 it gets ACK from the slave. It starts sending byte2 and DR gets empty and TXE=1 and byte 3 is loaded into DR, the count is decremented, count =0.
+9. Since count=0, all bytes have been written hence no TxE interrupt is required. So buffer interrupt is disabled.
+10. When byte2 is transferred, TxE=1, but no interrupt is generated.
+11. SR now gets loaded with 3rd Byte and gets ACK from the slave.
+12. Now both SR and DR are empty, so BTF goes high and Clock is stretched.
+13. When BTF=1, interrupt is generated where we can check count value and if it is 0, we generate STOP Condition.
+
+### 2. Master receiving data from slave
+#### Case 1: Receiving only 1 byte from slave.
+1. Master firmware generates START Condition.
+2. Firmware has to wait until SB=1, to confirm that the START condition is successfully generated.
+3. The master goes for the address phase where it writes addresses along with read/write bit =1.
+4. Master wait here until ADDR=1, which confirms the address phase is completed. ADDR flag is set only after ACK is received from slave for address sent. Master should clear above ADDR flag until the ADDR flag is not cleared I2C will be in a wait state by stretching clock to low. After clearing the ADDR bit, the I2C interface will enter into master receive mode. In receive mode, the I2C engine receives data over the SDA line into DR via SR.
+5. But before clearing the ADDR bit, you have to disable ACK because after the 1st-byte reception master should send NACK to slave but not the ACK. Then configure STOP bit to generate stop condition(It won't generate STOP condition immediately since I2C is in wait state), Now clear the ADDR flag.
+6. Once ADDR bit is cleared, I2C comes immediately out of the wait state and gets 1byte in the shift register. Since ACK is disabled already, NACK is sent to slave and data byte will be transferred to DR which triggers RXNE interrupt followed by a STOP condition. In RXNE interrupt you can read the byte sent
+
+#### Case 2: Receiving 2 bytes from slave
+1. When ADDR flag =1, Clock is stretched and I2C is in a wait state.
+2. Now we disable ACK(ACK=0) and set The POS=1. **POS: Acknowledge/PEC Position (for data reception)**
+   * POS =0: In this case, ACK(Bit 10) controls the Acknowledge/Not-Acknowledge of current byte received in the shift register.
+   * POS =1: In this case, ACK(Bit 10) controls the Acknowledge/Not-Acknowledge of Next byte received in the shift register.
+3. Before clearing the ADDR bit, make ACK=0 POS=1. Now Clear the ADDR flag. 
+4. Once the ADDR flag is cleared, now data1 will be received in master SR from slave SR, and ACK is sent to slave even though ACK is made 0, this is because we made POS=1.
+5. Content of Master SR will be moved to the DR and RxNE flag goes high indicating DR is not Empty.  Since ACK is sent to slave for Data1 reception, slave assumes that the master wants the next byte so it sends Data2. Since we made ACK=0 and POS=1, NACK will be sent to the slave.
+6. Now in masters I2C engine both SR and DR are full, BTF flag is set and the clock is stretched to make the I2C wait state. So now all firmware has to do in BTF handler code is to read data1 and data2.
+7. What exactly firmware does in the BTF handler is - first generate stop condition the read data register twice.
+
+#### Case 3: Receiving more than 2 bytes (N>2) from slave.
+1. Lets assume that there is a need to receive 100 bytes from the slave, N=100th byte, N-1=99th byte, and N-2=98th byte.
+2. From 1st byte to 97th byte(i.e N-3 )  carry out the reception in a normal way, that is waiting for RxNE=1 then read from DR.
+3. Once you reach till N-2 byte, follow below steps:-
+   * First wait until BTF=1,(that is N-2 is in DR and N-1 is in SR and also both SR=DR=full). So the clock is stretched to low.
+   * In BTF handler, first, disable ACK then read the data register.
+   * Now N-1 is in DR and Nth Byte is in SR. Now again BTF=1.
+   * Now in BTF handler configure stop condition then read the last two bytes.
+
+### 3. Slave Transmitting Data
+1. Master sends the address along with r/w = 1 if the address matches the slave sends ACK.
+2. Now ADDR=1, since slave address is matched. and when ADDR is cleared slave fall into Tx mode.
+3. Initially both DR and SR are empty so TxE goes high until slave writes any data into DR.
+4. After this for every TxE interrupt slave sends one data byte and the master sends ACK.
+5. When a master no longer wants any data from slave it sends out NACK.
+6. When NACK is received it causes the ACK-failure interrupt in slave,  where slave assumes that it is an indication from master to end communication. Then the master will generate stop condition which makes stop flag to be set in slave.
 
