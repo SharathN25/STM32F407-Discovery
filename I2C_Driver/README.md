@@ -256,3 +256,4 @@ The first 12 bits i.e CCR[11:0] are used to program the CCR. The CCR is value is
 4. After this for every TxE interrupt slave sends one data byte and the master sends ACK.
 5. When a master no longer wants any data from slave it sends out NACK.
 6. When NACK is received it causes the ACK-failure interrupt in slave,  where slave assumes that it is an indication from master to end communication. Then the master will generate stop condition which makes stop flag to be set in slave.
+
