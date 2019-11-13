@@ -257,3 +257,34 @@ The first 12 bits i.e CCR[11:0] are used to program the CCR. The CCR is value is
 5. When a master no longer wants any data from slave it sends out NACK.
 6. When NACK is received it causes the ACK-failure interrupt in slave,  where slave assumes that it is an indication from master to end communication. Then the master will generate stop condition which makes stop flag to be set in slave.
 
+
+## I2C Driver Development
+### Overview of I2C driver
+<img src = "I2C_Images/Figure_I2C_Driver_Overview.PNG" width = "500" hieght="350" hspace="200">
+
+The above figure gives an abstract idea about I2C driver development. The sample applications will use the **I2C driver** along with the MCU specific **startup code** to interact with the I2C Peripheral. The same approach can be used as a template to develop the driver for any STM32F4xx series MCU with slight modification.
+
+### I2C Driver API requirements
+<img src = "I2C_Images/Figure_I2C_Driver_Requirements.PNG" width = "500" hieght="400" hspace="200">
+
+The driver code will provide the API to initialize the given I2C peripheral this includes configuring I2C clock, Mode, addressing, etc. And the API to do the  Data transmission and Data reception. Finally, the APIs to do interrupt handling of I2C events and error.
+
+### I2C Pin Packs
+<img src = "I2C_Images/Figure_I2C_Pin_Packs.PNG" width="650" height="180" hspace="130">
+
+The STM32F407 has up to 3 I2C peripherals and each one of them has at least 2 pin packs. All the 3 I2C peripherals are connected to the **APB1** bus. The **I2C1** and **I2C2** functionality can be brought out on 3 different GPIO pin packs.  The **I2C3** functionality can be brought out on 2 different GPIO pin packs as shown in the above figure.
+
+## SPI Driver Code/Files
+The two main files for the SPI driver are ***hal_i2c_driver.h*** and ***hal_i2c_driver.c***. The header file(**.h** file) contains 3 main sections:
+
+* I2C Register bit definitions and macros
+* Data structure used for I2C
+* Declaration of all Driver Exposed APIs.
+
+The source file (**.c** file) provides the function definition of all the APIs.
+
+
+
+
+
+
