@@ -202,7 +202,7 @@ firmware has to poll for this or raise interrupt when this flag is set to read d
 ### 6. I2C Clock control register (I2C_CCR)
 The first 12 bits i.e CCR[11:0] are used to program the CCR. The CCR is value is calculated based on the given formula which is specific to STM. **Refer Section 27.6.8 I2C Clock control register (I2C_CCR) (Page 870 of RM0090)** for more details.
 
-## Steps to do data transmission and recption in I2C peripheral
+## Steps to do Data Transmission and Recption in I2C
 ### 1. Master Transmitting Data
 **Case**: Consider transmission of 3 bytes for simplicity
 
