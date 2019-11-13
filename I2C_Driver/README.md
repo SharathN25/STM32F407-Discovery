@@ -204,4 +204,27 @@ The first 12 bits i.e CCR[11:0] are used to program the CCR. The CCR is value is
 
 ## Steps to do data transmission and recption in I2C peripheral
 ### 1. Master Transmitting Data
-**Case**: Consider transmission of 3 
+**Case**: Consider transmission of 3 bytes for simplicity
+
+1. The Master firmware generates START Condition.
+2. Firmware has to wait until SB=1, to confirm that the START condition is successfully generated.
+3. The master goes for the address phase where it writes addresses along with read/write bit=0.
+4. Master wait here until ADDR=1, which confirms the address phase is completed. ADDR flag is set only after ACK is received from slave for address sent.
+5. Master should clear above ADDR flag until the ADDR flag is not cleared I2C will be in a wait state by stretching clock to low.
+6. Once AADR is cleared, I2C comes up from the wait state and TxE will be Set. (Here DR and SR are empty). Here 1st byte is loaded into DR  which is then loaded into SR. and DR goes empty again. The count is decremented. (Initially, count =3) , now Count =2
+7. As DR goes empty again, TxE=1, here we write the 2nd Byte to DR. Count is decremented. now count =1.
+8. When shift register finished transmission of byte1 it gets ACK from the slave. It starts sending byte2 and DR gets empty and TXE=1 and byte 3 is loaded into DR, the count is decremented, count =0.
+9. Since count=0, all bytes have been written hence no TxE interrupt is required. So buffer interrupt is disabled.
+10. When byte2 is transferred, TxE=1, but no interrupt is generated.
+11. SR now gets loaded with 3rd Byte and gets ACK from the slave.
+12. Now both SR and DR are empty, so BTF goes high and Clock is stretched.
+13. When BTF=1, interrupt is generated where we can check count value and if it is 0, we generate STOP Condition.
+
+### 2. Master receiving data from slave
+#### Case 1: Receiving only 1byte from slave.
+1. Master firmware generates START Condition.
+2. Firmware has to wait until SB=1, to confirm that the START condition is successfully generated.
+3. The master goes for the address phase where it writes addresses along with read/write bit =1.
+4. Master wait here until ADDR=1, which confirms the address phase is completed. ADDR flag is set only after ACK is received from slave for address sent. Master should clear above ADDR flag until the ADDR flag is not cleared I2C will be in a wait state by stretching clock to low. After clearing the ADDR bit, the I2C interface will enter into master receive mode. In receive mode, the I2C engine receives data over the SDA line into DR via SR.
+5. But before clearing the ADDR bit, you have to disable ACK because after the 1st-byte reception master should send NACK to slave but not the ACK. Then configure STOP bit to generate stop condition(It won't generate STOP condition immediately since I2C is in wait state), Now clear the ADDR flag.
+6. Once ADDR bit is cleared, I2C comes immediately out of the wait state and gets 1byte in the shift register. Since ACK is disabled already, NACK is sent to slave and data byte will be transferred to DR which triggers RXNE interrupt followed by a STOP condition. In RXNE interrupt you can read the byte sent
