@@ -199,3 +199,5 @@ firmware has to poll for this or raise interrupt when this flag is set to read d
                     
 * **TxE(Bit 7): Data register empty (transmitters)** - Use of this flag is a must during the data transmission. If TxE=1, then it means data register is empty and it is the right time to put data int DR for transmission. This flag is not set during the address phase. a write into DR automatically clears the TxE flag.
 
+### 6. I2C Clock control register (I2C_CCR)
+The first 12 bits i.e CCR[11:0] are used to program the CCR. The CCR is value is calculated based on the given formula which is specific to STM. **Refer Section 27.6.8 I2C Clock control register (I2C_CCR) (Page 870 of RM0090)** for more details.
