@@ -27,7 +27,7 @@ The STM32F407 Discovery board uses STM32F407VGT6 Microcontroller which has **ARM
 3. **S-BUS** (System Bus)
 
 **I-BUS**
-This bus connects the Instruction bus of the Cortex®-M4 with FPUFloating point unit) core to the BusMatrix. This bus is used by the core to fetch instructions. The target of this bus is a memory containing code (internal Flash memory/SRAM or external memories through the FSMC/FMC).
+This bus connects the Instruction bus of the Cortex®-M4 with FPU(Floating point unit) core to the BusMatrix. This bus is used by the core to fetch instructions. The target of this bus is a memory containing code (internal Flash memory/SRAM or external memories through the FSMC/FMC).
 
 **D-BUS**
 This bus connects the databus of the Cortex®-M4 with FPU to the 64-Kbyte CCM data RAM to the BusMatrix. This bus is used by the core for literal load and debug access. The target of this bus is a memory containing code or data (internal Flash memory or external memories through the FSMC/FMC).
@@ -48,7 +48,7 @@ Refering to the figure 7, The Yellow blocks are Master and blocks in Green are S
 
 STM32F407VGT6 Micorcontroller has 3 main clock sources:
 
-1. **Crystal Oscillator(HSE)** - This is external clock source which can be connected to MCU based on requirements. HSE standas fro **High speed External**. If you want to use **HSE** as **system clock** an external crystal oscillator(whose frequency must be in range **4 to 6Mhz** ) has to be connected. In this board, the manufacturer has connected **8Mhz** crystal.
+1. **Crystal Oscillator(HSE)** - This is external clock source which can be connected to MCU based on requirements. HSE standas fro **High speed External**. If you want to use **HSE** as **system clock** an external crystal oscillator(whose frequency must be in range **4 to 26Mhz** ) has to be connected. In this board, the manufacturer has connected **8Mhz** crystal.
 
 2. **RC Oscillator (HSI)** - All modern MCU comes with internal RC Oscillator, which can be just activated to use. HSI stands for **High Speed Internal** .After Reset, by default **HSI** is used to provide a clock to MCU, which means by default MCU select HSI as the clock. This clock is internal to MCU and its value is **16Mhz** in STM32F407 MCU. The HSI internal oscillator has the advantage of providing a clock at a low cost, as no external component is required to use this clock. It also has a faster start-up time than the external crystal oscillator however, frequency is less accurate when compared to the external crystal oscillator.
 
