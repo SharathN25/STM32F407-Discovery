@@ -87,7 +87,8 @@ This register is used to configure the mode of a particular GPIO pin. Before usi
 - 10: Alternate function mode -> Such as UART, SPI, I2C ect.
 - 11: Analog mode
 
-### 2. GPIO port output speed register (GPIOx_OSPEEDR)** (x = A..I/J/K)
+### 2. GPIO port output type register (GPIOx_OTYPER)
+(x = A..I/J/K)
 When the GPIO pin is in the output mode, this register is used to choose the output type. 
 
 **OTy[15:0]**: Port x configuration bits (y = 0..15), These bits are written by software to configure the output type of the I/O port.
