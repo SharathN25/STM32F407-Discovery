@@ -98,7 +98,7 @@ static void hal_spi_configure_device_mode(SPI_TypeDef *SPIx, uint32_t master)
   * @brief Configures SPI Data size and dirction 
   * @param *SPIx : Based address of SPI
   * @param datasize : data size to be configured
-  * @param lsbmsbfirst: if 1, lsb will be sent first.
+  * @param lsbfirst: if 1, lsb will be sent first.
   * @retval none
  */
 static void hal_spi_configure_datasize(SPI_TypeDef *SPIx, uint32_t datasize_16, uint32_t lasbfirst)
